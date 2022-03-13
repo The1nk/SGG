@@ -38,6 +38,7 @@ namespace ScratchPad
             this.panel1 = new System.Windows.Forms.Panel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.btnSet = new System.Windows.Forms.Button();
             this.cbWave6 = new System.Windows.Forms.CheckBox();
             this.tbDeviceRestartInterval = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -59,7 +60,6 @@ namespace ScratchPad
             this.tbDiscordHookUrl = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.btnSet = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -168,9 +168,21 @@ namespace ScratchPad
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "General";
             // 
+            // btnSet
+            // 
+            this.btnSet.Location = new System.Drawing.Point(196, 27);
+            this.btnSet.Name = "btnSet";
+            this.btnSet.Size = new System.Drawing.Size(94, 29);
+            this.btnSet.TabIndex = 10;
+            this.btnSet.Text = "Set ...";
+            this.btnSet.UseVisualStyleBackColor = true;
+            this.btnSet.Click += new System.EventHandler(this.btnSet_Click);
+            // 
             // cbWave6
             // 
             this.cbWave6.AutoSize = true;
+            this.cbWave6.Checked = true;
+            this.cbWave6.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cbWave6.Location = new System.Drawing.Point(6, 87);
             this.cbWave6.Name = "cbWave6";
             this.cbWave6.Size = new System.Drawing.Size(131, 24);
@@ -180,12 +192,13 @@ namespace ScratchPad
             // 
             // tbDeviceRestartInterval
             // 
+            this.tbDeviceRestartInterval.Enabled = false;
             this.tbDeviceRestartInterval.Location = new System.Drawing.Point(7, 207);
             this.tbDeviceRestartInterval.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tbDeviceRestartInterval.Name = "tbDeviceRestartInterval";
             this.tbDeviceRestartInterval.Size = new System.Drawing.Size(73, 27);
             this.tbDeviceRestartInterval.TabIndex = 7;
-            this.tbDeviceRestartInterval.Text = "5";
+            this.tbDeviceRestartInterval.Text = "-1";
             // 
             // label3
             // 
@@ -198,12 +211,13 @@ namespace ScratchPad
             // 
             // tbAppRestartInterval
             // 
+            this.tbAppRestartInterval.Enabled = false;
             this.tbAppRestartInterval.Location = new System.Drawing.Point(7, 138);
             this.tbAppRestartInterval.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tbAppRestartInterval.Name = "tbAppRestartInterval";
             this.tbAppRestartInterval.Size = new System.Drawing.Size(73, 27);
             this.tbAppRestartInterval.TabIndex = 5;
-            this.tbAppRestartInterval.Text = "5";
+            this.tbAppRestartInterval.Text = "-1";
             // 
             // label2
             // 
@@ -401,16 +415,6 @@ namespace ScratchPad
             this.pictureBox1.TabIndex = 10;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
-            // 
-            // btnSet
-            // 
-            this.btnSet.Location = new System.Drawing.Point(196, 27);
-            this.btnSet.Name = "btnSet";
-            this.btnSet.Size = new System.Drawing.Size(94, 29);
-            this.btnSet.TabIndex = 10;
-            this.btnSet.Text = "Set ...";
-            this.btnSet.UseVisualStyleBackColor = true;
-            this.btnSet.Click += new System.EventHandler(this.btnSet_Click);
             // 
             // Form1
             // 
