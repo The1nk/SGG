@@ -28,7 +28,8 @@ namespace SGG.Models
             Seller_Orbs,
             Seller_Stones,
             Wave6,
-            WinScreen
+            WinScreen,
+            MapSelect
         }
 
         static ImageTemplates() {
@@ -48,6 +49,7 @@ namespace SGG.Models
             lst.Add(ImageTemplate.FromBitmap(TemplateType.Seller_Stones, "Seller_Stones.bmp"));
             lst.Add(ImageTemplate.FromBitmap(TemplateType.Wave6, "Wave 6.bmp"));
             lst.Add(ImageTemplate.FromBitmap(TemplateType.WinScreen, "Win Screen.bmp"));
+            lst.Add(ImageTemplate.FromBitmap(TemplateType.MapSelect, "Map Select.bmp"));
 
             _templates = lst;
         }
@@ -86,13 +88,10 @@ namespace SGG.Models
 
         public bool IsPresentOn(Image image) {
             lock (image) {
-                Bitmap bmp;
-                if (image is Bitmap)
-                    bmp = (Bitmap) image;
-                else
-                    bmp = new Bitmap(image);
+                if (image is Bitmap bmp)
+                    return _points.All(pt => bmp.GetPixel(pt.Item1.X, pt.Item1.Y) == pt.Item2);
 
-                return _points.All(pt => bmp.GetPixel(pt.Item1.X, pt.Item1.Y) == pt.Item2);
+                return false;
             }
         }
     }

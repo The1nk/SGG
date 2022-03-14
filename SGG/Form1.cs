@@ -144,6 +144,7 @@ namespace ScratchPad {
                 if (cbWave6.Enabled)
                     CheckForWave6Reset(bmp, newGuid);
 
+                CheckForMapSelect(bmp, newGuid);
                 CheckForConfirm(bmp, newGuid);
                 CheckForMotd(bmp, newGuid);
                 CheckForOffer(bmp, newGuid);
@@ -220,7 +221,7 @@ namespace ScratchPad {
             // Dismiss
             DiscordLogger.Log(DiscordLogger.MessageType.Info, "Confirming layout");
             ClickAt(433, 1505);
-            SelectNextMap();
+            _nextActionAvailableAt = DateTime.Now.AddSeconds(.5);
         }
 
         private void CheckForLose(Image image, Guid guid) {
@@ -230,7 +231,7 @@ namespace ScratchPad {
             // Dismiss
             DiscordLogger.Log(DiscordLogger.MessageType.Info, "Dismissing 'Lose' screen");
             ClickAt(835, 277);
-            SelectNextMap();
+            _nextActionAvailableAt = DateTime.Now.AddSeconds(.5);
         }
 
         private void CheckForWin(Image image, Guid guid) {
@@ -240,7 +241,7 @@ namespace ScratchPad {
             // Dismiss
             DiscordLogger.Log(DiscordLogger.MessageType.Info, "Dismissing 'Win' screen");
             ClickAt(444, 1222);
-            SelectNextMap();
+            _nextActionAvailableAt = DateTime.Now.AddSeconds(.5);
         }
 
         private void CheckForWave6Reset(Image image, Guid guid) {
@@ -250,10 +251,15 @@ namespace ScratchPad {
             // Pop map select
             DiscordLogger.Log(DiscordLogger.MessageType.Info, "Resetting after Wave 6");
             ClickAt(790, 47);
-            SelectNextMap();
+            _nextActionAvailableAt = DateTime.Now.AddSeconds(.5);
         }
 
-        private void SelectNextMap() {
+        private void CheckForMapSelect(Image image, Guid guid) {
+            if (!guid.Equals(_currentGuid)) return;
+            if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.MapSelect).IsPresentOn(image)) return;
+
+            // Dismiss
+            DiscordLogger.Log(DiscordLogger.MessageType.Info, "Selecting map");
             ClickAt(_selectedMapPoint.X, _selectedMapPoint.Y);
             _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
         }
