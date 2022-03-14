@@ -203,7 +203,7 @@ namespace ScratchPad {
                 if (enabled) {
                     DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Accepting Seller for {saleType}");
                     ClickAt(494, 915);
-                    Thread.Sleep(400);
+                    Thread.Sleep(800);
                     ClickAt(494, 915);
                     _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
                 }
@@ -254,7 +254,7 @@ namespace ScratchPad {
             // Pop map select
             DiscordLogger.Log(DiscordLogger.MessageType.Info, "Resetting after Wave 6");
             ClickAt(790, 47);
-            _nextActionAvailableAt = DateTime.Now.AddSeconds(.5);
+            _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
         }
 
         private void CheckForMapSelect(Image image, Guid guid) {
@@ -274,14 +274,14 @@ namespace ScratchPad {
                 if (_currentRun > restartInterval) {
                     // Kill app
                     DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Restarting app!");
-                    _client.ExecuteShellCommand(_device, "am force-stop com.pixio.google.mtd", null);
-                    Thread.Sleep(2000);
+                    _client.ExecuteShellCommand(_device, "am force-stop com.pixio.google.mtd;monkey -p com.pixio.google.mtd 1", null);
+                    //Thread.Sleep(2000);
 
-                    // Start app
-                    _client.ExecuteShellCommand(_device, "monkey -p com.pixio.google.mtd 1", null);
-                    Thread.Sleep(2000);
+                    //// Start app
+                    //_client.ExecuteShellCommand(_device, "monkey -p com.pixio.google.mtd 1", null);
+                    Thread.Sleep(5000);
 
-                    _currentRun = 0;
+                    _currentRun = -1;
 
                     return;
                 }
