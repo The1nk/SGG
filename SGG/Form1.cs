@@ -34,6 +34,26 @@ namespace ScratchPad {
         public Form1() {
             InitializeComponent();
             _lastCaptures = new Queue<Image>();
+            
+            Settings.Load();
+            
+            tbAdbHost.Text = Settings.AdbHost;
+            tbAdbPort.Text = Settings.AdbPort;
+            cbCollectAchievements.Checked = Settings.CollectAchievements;
+            cbCollectWeeklies.Checked = Settings.CollectWeeklies;
+            cbWave6.Checked = Settings.StopAtWave6;
+            _selectedMapPoint = Settings.MapPoint;
+            tbAppRestartInterval.Text = Settings.AppRestartInterval;
+            tbDeviceRestartInterval.Text = Settings.DeviceRestartInterval;
+            cbSellerGems.Checked = Settings.SellerGems;
+            cbSellerOrbs.Checked = Settings.SellerOrbs;
+            cbSellerOther.Checked = Settings.SellerOther;
+            cbMonitorAttack.Checked = Settings.MonitorAttack;
+            cbMonitorCoins.Checked = Settings.MonitorCoins;
+            cbMonitorGems.Checked = Settings.MonitorGems;
+            cbMonitorOrbs.Checked = Settings.MonitorOrbs;
+            cbMonitorOther.Checked = Settings.MonitorOther;
+            tbDiscordHookUrl.Text = Settings.WebhookUrl;
         }
 
         private void UpdateImage(Image obj) {
@@ -50,6 +70,25 @@ namespace ScratchPad {
 
         private void Init() {
             DiscordLogger.SetUrl(tbDiscordHookUrl.Text);
+
+            Settings.AdbHost =  tbAdbHost.Text;
+            Settings.AdbPort =  tbAdbPort.Text;
+            Settings.CollectAchievements =  cbCollectAchievements.Checked;
+            Settings.CollectWeeklies =  cbCollectWeeklies.Checked;
+            Settings.StopAtWave6 =  cbWave6.Checked;
+            Settings.MapPoint =  _selectedMapPoint;
+            Settings.AppRestartInterval =  tbAppRestartInterval.Text;
+            Settings.DeviceRestartInterval =  tbDeviceRestartInterval.Text;
+            Settings.SellerGems =  cbSellerGems.Checked;
+            Settings.SellerOrbs =  cbSellerOrbs.Checked;
+            Settings.SellerOther =  cbSellerOther.Checked;
+            Settings.MonitorAttack =  cbMonitorAttack.Checked;
+            Settings.MonitorCoins =  cbMonitorCoins.Checked;
+            Settings.MonitorGems =  cbMonitorGems.Checked;
+            Settings.MonitorOrbs =  cbMonitorOrbs.Checked;
+            Settings.MonitorOther =  cbMonitorOther.Checked;
+            Settings.WebhookUrl =  tbDiscordHookUrl.Text;
+            Settings.Save();
 
             if (_initialized)
                 return;
