@@ -151,15 +151,15 @@ namespace ScratchPad {
                 CheckForWin(bmp, newGuid);
                 CheckForLose(bmp, newGuid);
 
-                if (CheckForAd(ImageTemplates.TemplateType.Ad_Attack, bmp, newGuid, cbMonitorAttack.Enabled)) return;
-                if (CheckForAd(ImageTemplates.TemplateType.Ad_Coins, bmp, newGuid, cbMonitorCoins.Enabled)) return;
-                if (CheckForAd(ImageTemplates.TemplateType.Ad_Gems, bmp, newGuid, cbMonitorGems.Enabled)) return;
-                if (CheckForAd(ImageTemplates.TemplateType.Ad_Orbs, bmp, newGuid, cbMonitorOrbs.Enabled)) return;
-                if (CheckForAd(ImageTemplates.TemplateType.Ad_Stones, bmp, newGuid, cbMonitorOther.Enabled)) return;
+                if (CheckForAd(ImageTemplates.TemplateType.Ad_Attack, bmp, newGuid, cbMonitorAttack)) return;
+                if (CheckForAd(ImageTemplates.TemplateType.Ad_Coins, bmp, newGuid, cbMonitorCoins)) return;
+                if (CheckForAd(ImageTemplates.TemplateType.Ad_Gems, bmp, newGuid, cbMonitorGems)) return;
+                if (CheckForAd(ImageTemplates.TemplateType.Ad_Orbs, bmp, newGuid, cbMonitorOrbs)) return;
+                if (CheckForAd(ImageTemplates.TemplateType.Ad_Stones, bmp, newGuid, cbMonitorOther)) return;
 
-                if (CheckForSale(ImageTemplates.TemplateType.Seller_Gems, bmp, newGuid, cbSellerGems.Enabled)) return;
-                if (CheckForSale(ImageTemplates.TemplateType.Seller_Orbs, bmp, newGuid, cbSellerOrbs.Enabled)) return;
-                if (CheckForSale(ImageTemplates.TemplateType.Seller_Stones, bmp, newGuid, cbSellerOther.Enabled)) return;
+                if (CheckForSale(ImageTemplates.TemplateType.Seller_Gems, bmp, newGuid, cbSellerGems)) return;
+                if (CheckForSale(ImageTemplates.TemplateType.Seller_Orbs, bmp, newGuid, cbSellerOrbs)) return;
+                if (CheckForSale(ImageTemplates.TemplateType.Seller_Stones, bmp, newGuid, cbSellerOther)) return;
             }
             catch (Exception ex) {
                 DiscordLogger.Log(DiscordLogger.MessageType.Error, $"{ex.Message}\r\n{ex.StackTrace}").Wait(500);
@@ -170,9 +170,10 @@ namespace ScratchPad {
             }
         }
 
-        private bool CheckForAd(ImageTemplates.TemplateType adType, Image clone, Guid guid, bool enabled) {
+        private bool CheckForAd(ImageTemplates.TemplateType adType, Image clone, Guid guid, CheckBox checkbox) {
             if (!guid.Equals(_currentGuid)) return true;
             var ret = ImageTemplates.GetByType(adType).IsPresentOn(clone);
+            var enabled = checkbox.Enabled && checkbox.Checked;
 
             if (ret) {
                 if (enabled) {
@@ -189,9 +190,10 @@ namespace ScratchPad {
             return ret;
         }
 
-        private bool CheckForSale(ImageTemplates.TemplateType saleType,  Image clone, Guid guid, bool enabled) {
+        private bool CheckForSale(ImageTemplates.TemplateType saleType,  Image clone, Guid guid, CheckBox checkbox) {
             if (!guid.Equals(_currentGuid)) return true;
             var ret = ImageTemplates.GetByType(saleType).IsPresentOn( clone);
+            var enabled = checkbox.Enabled && checkbox.Checked;
 
             if (ret) {
                 if (enabled) {
