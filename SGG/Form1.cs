@@ -110,10 +110,12 @@ namespace ScratchPad {
             catch (Exception ex) {
                 _initialized = false;
 
-                MessageBox.Show(
+                string msg =
                     ex.Message.StartsWith("No connection could be made because the target machine actively refused it.")
                         ? $"Unable to connect to ADB server. Please ensure it's running.\r\n\r\n{ex.Message}"
-                        : ex.Message);
+                        : ex.Message;
+                DiscordLogger.Log(DiscordLogger.MessageType.Error, msg).Wait(500);
+                MessageBox.Show(msg);
             }
         }
 
