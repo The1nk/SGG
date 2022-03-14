@@ -182,7 +182,7 @@ namespace ScratchPad {
                 else {
                     DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Skipping Monitor for {adType}");
                     ClickAt(234, 888);
-                    _nextActionAvailableAt = DateTime.Now.AddSeconds(.5);
+                    _nextActionAvailableAt = DateTime.Now.AddSeconds(1);
                 }
             }
 
@@ -199,12 +199,12 @@ namespace ScratchPad {
                     ClickAt(494, 915);
                     Thread.Sleep(200);
                     ClickAt(494, 915);
-                    _nextActionAvailableAt = DateTime.Now.AddSeconds(.5);
+                    _nextActionAvailableAt = DateTime.Now.AddSeconds(1);
                 }
                 else {
                     DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Skipping Seller for {saleType}");
                     ClickAt(243, 847);
-                    _nextActionAvailableAt = DateTime.Now.AddSeconds(.5);
+                    _nextActionAvailableAt = DateTime.Now.AddSeconds(1);
                 }
             }
 

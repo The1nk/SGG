@@ -22,7 +22,7 @@ namespace SGG.Utils
             try {
                 using var c = new DiscordWebhookClient(_hookUrl);
                 var msg =
-                    $"{DateTime.Now.ToString("s", System.Globalization.CultureInfo.InvariantCulture)}\t{type}\t{message}";
+                    $"`{DateTime.Now.ToString("s", System.Globalization.CultureInfo.InvariantCulture)}\t{type}\t{message}`";
 
                 await c.SendMessageAsync(msg);
             }

@@ -64,26 +64,25 @@ namespace SGG.Utils
             var lines = File.ReadAllLines("settings.txt");
             
             AdbHost = lines[0];
-            AdbHost = lines[1];
-            AdbPort = lines[2];
-            CollectAchievements = bool.Parse(lines[3]);
-            CollectWeeklies = bool.Parse(lines[4]);
-            StopAtWave6 = bool.Parse(lines[5]);
-            MapPoint = new Point(int.Parse(lines[6]), int.Parse(lines[7]));
-            AppRestartInterval = lines[8];
-            DeviceRestartInterval = lines[9];
+            AdbPort = lines[1];
+            CollectAchievements = bool.Parse(lines[2]);
+            CollectWeeklies = bool.Parse(lines[3]);
+            StopAtWave6 = bool.Parse(lines[4]);
+            MapPoint = new Point(int.Parse(lines[5]), int.Parse(lines[6]));
+            AppRestartInterval = lines[7];
+            DeviceRestartInterval = lines[8];
 
-            SellerGems = bool.Parse(lines[10]);
-            SellerOrbs = bool.Parse(lines[11]);
-            SellerOther = bool.Parse(lines[12]);
+            SellerGems = bool.Parse(lines[9]);
+            SellerOrbs = bool.Parse(lines[10]);
+            SellerOther = bool.Parse(lines[11]);
 
-            MonitorGems = bool.Parse(lines[13]);
-            MonitorOrbs = bool.Parse(lines[14]);
-            MonitorAttack = bool.Parse(lines[15]);
-            MonitorCoins = bool.Parse(lines[16]);
-            MonitorOther = bool.Parse(lines[17]);
+            MonitorGems = bool.Parse(lines[12]);
+            MonitorOrbs = bool.Parse(lines[13]);
+            MonitorAttack = bool.Parse(lines[14]);
+            MonitorCoins = bool.Parse(lines[15]);
+            MonitorOther = bool.Parse(lines[16]);
 
-            WebhookUrl = lines[18];
+            WebhookUrl = lines[17];
         }
     }
 }
