@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using SGG.Models;
+using SGG.Utils;
 using SharpAdbClient;
 using SharpAdbClient.DeviceCommands;
 using SixteenTons.Utils;
@@ -48,6 +49,8 @@ namespace ScratchPad {
         }
 
         private void Init() {
+            DiscordLogger.SetUrl(tbDiscordHookUrl.Text);
+
             if (_initialized)
                 return;
 
@@ -118,6 +121,7 @@ namespace ScratchPad {
                 if (CheckForSale(ImageTemplates.TemplateType.Seller_Stones, bmp, newGuid, cbSellerOther.Enabled)) return;
             }
             catch (Exception ex) {
+                DiscordLogger.Log(DiscordLogger.MessageType.Error, $"{ex.Message}\r\n{ex.StackTrace}").Wait(500);
                 Debug.WriteLine($"{ex.Message}\r\n{ex.StackTrace}");
             }
             finally {
@@ -131,9 +135,11 @@ namespace ScratchPad {
 
             if (ret) {
                 if (enabled) {
+                    DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Watching Monitor for {adType}");
                     // Watch ad .. disabled for now
                 }
                 else {
+                    DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Skipping Monitor for {adType}");
                     ClickAt(234, 888);
                     _nextActionAvailableAt = DateTime.Now.AddSeconds(.5);
                 }
@@ -148,12 +154,14 @@ namespace ScratchPad {
 
             if (ret) {
                 if (enabled) {
+                    DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Accepting Seller for {saleType}");
                     ClickAt(494, 915);
                     Thread.Sleep(200);
                     ClickAt(494, 915);
                     _nextActionAvailableAt = DateTime.Now.AddSeconds(.5);
                 }
                 else {
+                    DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Skipping Seller for {saleType}");
                     ClickAt(243, 847);
                     _nextActionAvailableAt = DateTime.Now.AddSeconds(.5);
                 }
@@ -167,6 +175,7 @@ namespace ScratchPad {
             if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.ConfirmLayout).IsPresentOn(image)) return;
 
             // Dismiss
+            DiscordLogger.Log(DiscordLogger.MessageType.Info, "Confirming layout");
             ClickAt(433, 1505);
             SelectNextMap();
         }
@@ -176,6 +185,7 @@ namespace ScratchPad {
             if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.LoseScreen).IsPresentOn(image)) return;
 
             // Dismiss
+            DiscordLogger.Log(DiscordLogger.MessageType.Info, "Dismissing 'Lose' screen");
             ClickAt(835, 277);
             SelectNextMap();
         }
@@ -185,6 +195,7 @@ namespace ScratchPad {
             if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.WinScreen).IsPresentOn(image)) return;
 
             // Dismiss
+            DiscordLogger.Log(DiscordLogger.MessageType.Info, "Dismissing 'Win' screen");
             ClickAt(444, 1222);
             SelectNextMap();
         }
@@ -194,6 +205,7 @@ namespace ScratchPad {
             if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.Wave6).IsPresentOn(image)) return;
 
             // Pop map select
+            DiscordLogger.Log(DiscordLogger.MessageType.Info, "Resetting after Wave 6");
             ClickAt(790, 47);
             SelectNextMap();
         }
@@ -208,6 +220,7 @@ namespace ScratchPad {
             if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.OfferPopup).IsPresentOn(image)) return;
 
             // Dismiss
+            DiscordLogger.Log(DiscordLogger.MessageType.Info, "Dismissing sale popup");
             ClickAt(835, 277);
             _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
         }
@@ -217,6 +230,7 @@ namespace ScratchPad {
             if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.SpeedMult1x).IsPresentOn(image)) return;
 
             // Toggle it
+            DiscordLogger.Log(DiscordLogger.MessageType.Info, "Enabling 2x speed");
             ClickAt(69, 1394);
             _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
         }
@@ -226,6 +240,7 @@ namespace ScratchPad {
             if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.MotdPopup).IsPresentOn(image)) return;
 
             // Dismiss it!
+            DiscordLogger.Log(DiscordLogger.MessageType.Info, "Dismissing MOTD");
             ClickAt(844, 307);
             _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
         }
