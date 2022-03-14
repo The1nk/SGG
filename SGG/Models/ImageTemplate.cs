@@ -62,17 +62,23 @@ namespace SGG.Models
     public class ImageTemplate {
         public ImageTemplates.TemplateType Type;
         private IList<Tuple<Point, Color>> _points;
+        private int _height;
+        private int _width;
 
         public static ImageTemplate FromBitmap(ImageTemplates.TemplateType type, string fileName) {
             var lst = new List<Tuple<Point, Color>>();
-            var ret = new ImageTemplate {
-                Type = type,
-                _points = lst
-            };
-
+            
             Debug.WriteLine($"Starting {fileName}");
 
             using var bmp = new Bitmap($"Templates\\{fileName}");
+            
+            var ret = new ImageTemplate {
+                Type = type,
+                _points = lst,
+                _height = bmp.Height,
+                _width =  bmp.Width
+            };
+
             for (var row = 0; row < bmp.Height; row++)
             for (var col = 0; col < bmp.Width; col++) {
                 var c = bmp.GetPixel(col, row);
@@ -87,6 +93,9 @@ namespace SGG.Models
         }
 
         public bool IsPresentOn(Image image) {
+            if (image.Height != this._height || image.Width != this._width)
+                return false;
+
             lock (image) {
                 if (image is Bitmap bmp)
                     return _points.All(pt => bmp.GetPixel(pt.Item1.X, pt.Item1.Y) == pt.Item2);

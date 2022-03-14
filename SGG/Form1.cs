@@ -24,6 +24,9 @@ namespace ScratchPad {
         private DateTime _nextActionAvailableAt;
         private readonly object _lockObject = new object();
         private bool _running = false;
+        private int _currentRun = 0;
+        private int _currentRunAbs = 0;
+
 
         private ContextMenuStrip _contextMenu;
         private string _setting = string.Empty;
@@ -141,7 +144,7 @@ namespace ScratchPad {
                 var newGuid = Guid.NewGuid();
                 _currentGuid = new Guid(newGuid.ToByteArray());
                 
-                if (cbWave6.Enabled)
+                if (cbWave6.Checked)
                     CheckForWave6Reset(bmp, newGuid);
 
                 CheckForMapSelect(bmp, newGuid);
@@ -184,7 +187,7 @@ namespace ScratchPad {
                 else {
                     DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Skipping Monitor for {adType}");
                     ClickAt(234, 888);
-                    _nextActionAvailableAt = DateTime.Now.AddSeconds(1);
+                    _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
                 }
             }
 
@@ -200,14 +203,14 @@ namespace ScratchPad {
                 if (enabled) {
                     DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Accepting Seller for {saleType}");
                     ClickAt(494, 915);
-                    Thread.Sleep(200);
+                    Thread.Sleep(400);
                     ClickAt(494, 915);
-                    _nextActionAvailableAt = DateTime.Now.AddSeconds(1);
+                    _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
                 }
                 else {
                     DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Skipping Seller for {saleType}");
                     ClickAt(243, 847);
-                    _nextActionAvailableAt = DateTime.Now.AddSeconds(1);
+                    _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
                 }
             }
 
@@ -257,6 +260,32 @@ namespace ScratchPad {
         private void CheckForMapSelect(Image image, Guid guid) {
             if (!guid.Equals(_currentGuid)) return;
             if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.MapSelect).IsPresentOn(image)) return;
+
+            int restartInterval = -1;
+            int.TryParse(tbAppRestartInterval.Text.Trim(), out restartInterval);
+
+            _currentRun++;
+            _currentRunAbs++;
+            DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Starting run #{_currentRunAbs:#,##0}..");
+
+            if (restartInterval > 0) {
+                DiscordLogger.Log(DiscordLogger.MessageType.Info,
+                    $"Run #{_currentRun:#,##0} of {restartInterval:#,##0}..");
+                if (_currentRun > restartInterval) {
+                    // Kill app
+                    DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Restarting app!");
+                    _client.ExecuteShellCommand(_device, "am force-stop com.pixio.google.mtd", null);
+                    Thread.Sleep(2000);
+
+                    // Start app
+                    _client.ExecuteShellCommand(_device, "monkey -p com.pixio.google.mtd 1", null);
+                    Thread.Sleep(2000);
+
+                    _currentRun = 0;
+
+                    return;
+                }
+            }
 
             // Dismiss
             DiscordLogger.Log(DiscordLogger.MessageType.Info, "Selecting map");

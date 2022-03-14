@@ -211,7 +211,6 @@ namespace ScratchPad
             // 
             // tbAppRestartInterval
             // 
-            this.tbAppRestartInterval.Enabled = false;
             this.tbAppRestartInterval.Location = new System.Drawing.Point(7, 138);
             this.tbAppRestartInterval.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tbAppRestartInterval.Name = "tbAppRestartInterval";
