@@ -202,8 +202,7 @@ namespace ScratchPad {
             if (ret) {
                 if (enabled) {
                     DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Accepting Seller for {saleType}");
-                    ClickAt(494, 915);
-                    Thread.Sleep(800);
+                    ClickAt(494, 915, 1);
                     ClickAt(494, 915);
                     _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
                 }
@@ -274,13 +273,8 @@ namespace ScratchPad {
                 if (_currentRun > restartInterval) {
                     // Kill app
                     DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Restarting app!");
-                    _client.ExecuteShellCommand(_device, "am force-stop com.pixio.google.mtd;monkey -p com.pixio.google.mtd 1", null);
-                    //Thread.Sleep(2000);
-
-                    //// Start app
-                    //_client.ExecuteShellCommand(_device, "monkey -p com.pixio.google.mtd 1", null);
-                    Thread.Sleep(5000);
-
+                    _client.ExecuteShellCommand(_device, "am force-stop com.pixio.google.mtd;sleep 5;monkey -p com.pixio.google.mtd 15;sleep 10", null);
+                    DiscordLogger.Log(DiscordLogger.MessageType.Info, $"App restarted..?");
                     _currentRun = -1;
 
                     return;
@@ -325,6 +319,10 @@ namespace ScratchPad {
 
         private void ClickAt(int x, int y) {
             _client.ExecuteShellCommand(_device, $"input tap {x} {y}", null);
+        }
+
+        private void ClickAt(int x, int y, int secondsDelay) {
+            _client.ExecuteShellCommand(_device, $"input tap {x} {y};sleep {secondsDelay}", null);
         }
 
         private void btnStart_Click(object sender, EventArgs e) {
