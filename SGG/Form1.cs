@@ -238,8 +238,9 @@ namespace ScratchPad {
 
             // Dismiss
             DiscordLogger.Log(DiscordLogger.MessageType.Info, "Dismissing 'Lose' screen");
-            ClickAt(835, 277);
-            _nextActionAvailableAt = DateTime.Now.AddSeconds(.5);
+            ClickAt(252, 1211, 2);
+            ClickAt(283, 1059);
+            _nextActionAvailableAt = DateTime.Now.AddSeconds(1);
         }
 
         private void CheckForWin(Image image, Guid guid) {
