@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 using Discord.Webhook;
@@ -10,7 +11,8 @@ namespace SGG.Utils
         private static string _hookUrl;
 
         public enum MessageType {
-            Info, Warn, Error
+            Info, Warn, Error,
+            Debug
         }
 
         public static void SetUrl(string url) => _hookUrl = url;
@@ -24,7 +26,9 @@ namespace SGG.Utils
                 var msg =
                     $"`{DateTime.Now.ToString("s", System.Globalization.CultureInfo.InvariantCulture)}\t{type}\t{message}`";
 
-                await c.SendMessageAsync(msg);
+                if ((type == MessageType.Debug && Debugger.IsAttached) ||
+                    type != MessageType.Debug)
+                    await c.SendMessageAsync(msg);
             }
             catch {
                 ;
