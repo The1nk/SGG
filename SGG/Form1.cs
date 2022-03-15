@@ -23,7 +23,6 @@ namespace ScratchPad {
         private ScreenCaptureWorker _screenCaptureWorker;
         private DateTime _nextActionAvailableAt;
         private readonly object _lockObject = new object();
-        private bool _running = false;
         private int _currentRun = 0;
         private int _currentRunAbs = 0;
 
@@ -32,7 +31,6 @@ namespace ScratchPad {
         private string _setting = string.Empty;
 
         private Point _selectedMapPoint = new Point(179, 612);
-        private Guid _currentGuid;
         
         public Form1() {
             InitializeComponent();
@@ -123,15 +121,7 @@ namespace ScratchPad {
         }
 
         private void RunBot(Image obj) {
-            if (_running)
-                return;
-
-            lock (_lockObject) {
-                if (_running)
-                    return;
-
-                _running = true;
-            }
+            if (!Monitor.TryEnter(_lockObject, 20)) return;
 
             try {
                 if (DateTime.Now <= _nextActionAvailableAt) return;
@@ -141,41 +131,37 @@ namespace ScratchPad {
                     bmp = new Bitmap((Image) obj.Clone());
 
                 }
-                var newGuid = Guid.NewGuid();
-                _currentGuid = new Guid(newGuid.ToByteArray());
-                
                 if (cbWave6.Checked)
-                    CheckForWave6Reset(bmp, newGuid);
+                    CheckForWave6Reset(bmp);
 
-                CheckForMapSelect(bmp, newGuid);
-                CheckForConfirm(bmp, newGuid);
-                CheckForMotd(bmp, newGuid);
-                CheckForOffer(bmp, newGuid);
-                CheckForSpeedMultiplier(bmp, newGuid);
-                CheckForWin(bmp, newGuid);
-                CheckForLose(bmp, newGuid);
+                CheckForMapSelect(bmp);
+                CheckForConfirm(bmp);
+                CheckForMotd(bmp);
+                CheckForOffer(bmp);
+                CheckForSpeedMultiplier(bmp);
+                CheckForWin(bmp);
+                CheckForLose(bmp);
 
-                if (CheckForAd(ImageTemplates.TemplateType.Ad_Attack, bmp, newGuid, cbMonitorAttack)) return;
-                if (CheckForAd(ImageTemplates.TemplateType.Ad_Coins, bmp, newGuid, cbMonitorCoins)) return;
-                if (CheckForAd(ImageTemplates.TemplateType.Ad_Gems, bmp, newGuid, cbMonitorGems)) return;
-                if (CheckForAd(ImageTemplates.TemplateType.Ad_Orbs, bmp, newGuid, cbMonitorOrbs)) return;
-                if (CheckForAd(ImageTemplates.TemplateType.Ad_Stones, bmp, newGuid, cbMonitorOther)) return;
+                if (CheckForAd(ImageTemplates.TemplateType.Ad_Attack, bmp, cbMonitorAttack)) return;
+                if (CheckForAd(ImageTemplates.TemplateType.Ad_Coins, bmp, cbMonitorCoins)) return;
+                if (CheckForAd(ImageTemplates.TemplateType.Ad_Gems, bmp, cbMonitorGems)) return;
+                if (CheckForAd(ImageTemplates.TemplateType.Ad_Orbs, bmp, cbMonitorOrbs)) return;
+                if (CheckForAd(ImageTemplates.TemplateType.Ad_Stones, bmp, cbMonitorOther)) return;
 
-                if (CheckForSale(ImageTemplates.TemplateType.Seller_Gems, bmp, newGuid, cbSellerGems)) return;
-                if (CheckForSale(ImageTemplates.TemplateType.Seller_Orbs, bmp, newGuid, cbSellerOrbs)) return;
-                if (CheckForSale(ImageTemplates.TemplateType.Seller_Stones, bmp, newGuid, cbSellerOther)) return;
+                if (CheckForSale(ImageTemplates.TemplateType.Seller_Gems, bmp, cbSellerGems)) return;
+                if (CheckForSale(ImageTemplates.TemplateType.Seller_Orbs, bmp, cbSellerOrbs)) return;
+                if (CheckForSale(ImageTemplates.TemplateType.Seller_Stones, bmp, cbSellerOther)) return;
             }
             catch (Exception ex) {
                 DiscordLogger.Log(DiscordLogger.MessageType.Error, $"{ex.Message}\r\n{ex.StackTrace}").Wait(500);
                 Debug.WriteLine($"{ex.Message}\r\n{ex.StackTrace}");
             }
             finally {
-                _running = false;
+                Monitor.Exit(_lockObject);
             }
         }
 
-        private bool CheckForAd(ImageTemplates.TemplateType adType, Image clone, Guid guid, CheckBox checkbox) {
-            if (!guid.Equals(_currentGuid)) return true;
+        private bool CheckForAd(ImageTemplates.TemplateType adType, Image clone, CheckBox checkbox) {
             var ret = ImageTemplates.GetByType(adType).IsPresentOn(clone);
             var enabled = checkbox.Enabled && checkbox.Checked;
 
@@ -200,8 +186,7 @@ namespace ScratchPad {
             _client.ExecuteShellCommand(_device, $"input keyevent 4;sleep {secondsDelay}", null);
         }
 
-        private bool CheckForSale(ImageTemplates.TemplateType saleType,  Image clone, Guid guid, CheckBox checkbox) {
-            if (!guid.Equals(_currentGuid)) return true;
+        private bool CheckForSale(ImageTemplates.TemplateType saleType,  Image clone, CheckBox checkbox) {
             var ret = ImageTemplates.GetByType(saleType).IsPresentOn( clone);
             var enabled = checkbox.Enabled && checkbox.Checked;
 
@@ -222,8 +207,7 @@ namespace ScratchPad {
             return ret;
         }
 
-        private void CheckForConfirm(Image image, Guid guid) {
-            if (!guid.Equals(_currentGuid)) return;
+        private void CheckForConfirm(Image image) {
             if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.ConfirmLayout).IsPresentOn(image)) return;
 
             // Dismiss
@@ -232,8 +216,7 @@ namespace ScratchPad {
             _nextActionAvailableAt = DateTime.Now.AddSeconds(.5);
         }
 
-        private void CheckForLose(Image image, Guid guid) {
-            if (!guid.Equals(_currentGuid)) return;
+        private void CheckForLose(Image image) {
             if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.LoseScreen).IsPresentOn(image)) return;
 
             // Dismiss
@@ -243,8 +226,7 @@ namespace ScratchPad {
             _nextActionAvailableAt = DateTime.Now.AddSeconds(1);
         }
 
-        private void CheckForWin(Image image, Guid guid) {
-            if (!guid.Equals(_currentGuid)) return;
+        private void CheckForWin(Image image) {
             if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.WinScreen).IsPresentOn(image)) return;
 
             // Dismiss
@@ -253,8 +235,7 @@ namespace ScratchPad {
             _nextActionAvailableAt = DateTime.Now.AddSeconds(.5);
         }
 
-        private void CheckForWave6Reset(Image image, Guid guid) {
-            if (!guid.Equals(_currentGuid)) return;
+        private void CheckForWave6Reset(Image image) {
             if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.Wave6).IsPresentOn(image)) return;
 
             // Pop map select
@@ -263,8 +244,7 @@ namespace ScratchPad {
             _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
         }
 
-        private void CheckForMapSelect(Image image, Guid guid) {
-            if (!guid.Equals(_currentGuid)) return;
+        private void CheckForMapSelect(Image image) {
             if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.MapSelect).IsPresentOn(image)) return;
 
             int restartInterval = -1;
@@ -294,8 +274,7 @@ namespace ScratchPad {
             _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
         }
 
-        private void CheckForOffer(Image image, Guid guid) {
-            if (!guid.Equals(_currentGuid)) return;
+        private void CheckForOffer(Image image) {
             if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.OfferPopup).IsPresentOn(image)) return;
 
             // Dismiss
@@ -304,8 +283,7 @@ namespace ScratchPad {
             _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
         }
 
-        private void CheckForSpeedMultiplier(Image image, Guid guid) {
-            if (!guid.Equals(_currentGuid)) return;
+        private void CheckForSpeedMultiplier(Image image) {
             if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.SpeedMult1x).IsPresentOn(image)) return;
 
             // Toggle it
@@ -314,8 +292,7 @@ namespace ScratchPad {
             _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
         }
 
-        private void CheckForMotd(Image image, Guid guid) {
-            if (!guid.Equals(_currentGuid)) return;
+        private void CheckForMotd(Image image) {
             if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.MotdPopup).IsPresentOn(image)) return;
 
             // Dismiss it!
