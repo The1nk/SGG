@@ -40,8 +40,6 @@ namespace ScratchPad
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.btnSet = new System.Windows.Forms.Button();
             this.cbWave6 = new System.Windows.Forms.CheckBox();
-            this.tbDeviceRestartInterval = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
             this.tbAppRestartInterval = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.cbCollectWeeklies = new System.Windows.Forms.CheckBox();
@@ -60,6 +58,8 @@ namespace ScratchPad
             this.tbDiscordHookUrl = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.cbSleepy = new System.Windows.Forms.CheckBox();
+            this.cbOfflineGold = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -146,15 +146,15 @@ namespace ScratchPad
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(302, 676);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(302, 663);
             this.flowLayoutPanel1.TabIndex = 9;
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.cbOfflineGold);
+            this.groupBox4.Controls.Add(this.cbSleepy);
             this.groupBox4.Controls.Add(this.btnSet);
             this.groupBox4.Controls.Add(this.cbWave6);
-            this.groupBox4.Controls.Add(this.tbDeviceRestartInterval);
-            this.groupBox4.Controls.Add(this.label3);
             this.groupBox4.Controls.Add(this.tbAppRestartInterval);
             this.groupBox4.Controls.Add(this.label2);
             this.groupBox4.Controls.Add(this.cbCollectWeeklies);
@@ -163,7 +163,7 @@ namespace ScratchPad
             this.groupBox4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.groupBox4.Size = new System.Drawing.Size(296, 242);
+            this.groupBox4.Size = new System.Drawing.Size(296, 229);
             this.groupBox4.TabIndex = 13;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "General";
@@ -190,28 +190,9 @@ namespace ScratchPad
             this.cbWave6.Text = "Stop at Wave 6";
             this.cbWave6.UseVisualStyleBackColor = true;
             // 
-            // tbDeviceRestartInterval
-            // 
-            this.tbDeviceRestartInterval.Enabled = false;
-            this.tbDeviceRestartInterval.Location = new System.Drawing.Point(7, 207);
-            this.tbDeviceRestartInterval.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.tbDeviceRestartInterval.Name = "tbDeviceRestartInterval";
-            this.tbDeviceRestartInterval.Size = new System.Drawing.Size(73, 27);
-            this.tbDeviceRestartInterval.TabIndex = 7;
-            this.tbDeviceRestartInterval.Text = "-1";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(7, 183);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(255, 20);
-            this.label3.TabIndex = 6;
-            this.label3.Text = "Device Restart Interval (App Restarts)";
-            // 
             // tbAppRestartInterval
             // 
-            this.tbAppRestartInterval.Location = new System.Drawing.Point(7, 138);
+            this.tbAppRestartInterval.Location = new System.Drawing.Point(7, 198);
             this.tbAppRestartInterval.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tbAppRestartInterval.Name = "tbAppRestartInterval";
             this.tbAppRestartInterval.Size = new System.Drawing.Size(73, 27);
@@ -221,7 +202,7 @@ namespace ScratchPad
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 114);
+            this.label2.Location = new System.Drawing.Point(6, 174);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(185, 20);
             this.label2.TabIndex = 4;
@@ -254,7 +235,7 @@ namespace ScratchPad
             this.groupBox2.Controls.Add(this.cbSellerOther);
             this.groupBox2.Controls.Add(this.cbSellerOrbs);
             this.groupBox2.Controls.Add(this.cbSellerGems);
-            this.groupBox2.Location = new System.Drawing.Point(3, 377);
+            this.groupBox2.Location = new System.Drawing.Point(3, 364);
             this.groupBox2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -306,7 +287,7 @@ namespace ScratchPad
             this.groupBox3.Controls.Add(this.cbMonitorOrbs);
             this.groupBox3.Controls.Add(this.cbMonitorCoins);
             this.groupBox3.Controls.Add(this.cbMonitorAttack);
-            this.groupBox3.Location = new System.Drawing.Point(3, 478);
+            this.groupBox3.Location = new System.Drawing.Point(3, 465);
             this.groupBox3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -374,7 +355,7 @@ namespace ScratchPad
             // 
             this.groupBox9.Controls.Add(this.tbDiscordHookUrl);
             this.groupBox9.Controls.Add(this.label11);
-            this.groupBox9.Location = new System.Drawing.Point(3, 577);
+            this.groupBox9.Location = new System.Drawing.Point(3, 564);
             this.groupBox9.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox9.Name = "groupBox9";
             this.groupBox9.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -414,6 +395,30 @@ namespace ScratchPad
             this.pictureBox1.TabIndex = 10;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.Click += new System.EventHandler(this.PictureBox1_Click);
+            // 
+            // cbSleepy
+            // 
+            this.cbSleepy.AutoSize = true;
+            this.cbSleepy.Checked = true;
+            this.cbSleepy.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbSleepy.Location = new System.Drawing.Point(6, 117);
+            this.cbSleepy.Name = "cbSleepy";
+            this.cbSleepy.Size = new System.Drawing.Size(194, 24);
+            this.cbSleepy.TabIndex = 11;
+            this.cbSleepy.Text = "Sleepy Summoner Mode";
+            this.cbSleepy.UseVisualStyleBackColor = true;
+            // 
+            // cbOfflineGold
+            // 
+            this.cbOfflineGold.AutoSize = true;
+            this.cbOfflineGold.Checked = true;
+            this.cbOfflineGold.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbOfflineGold.Location = new System.Drawing.Point(6, 147);
+            this.cbOfflineGold.Name = "cbOfflineGold";
+            this.cbOfflineGold.Size = new System.Drawing.Size(162, 24);
+            this.cbOfflineGold.TabIndex = 12;
+            this.cbOfflineGold.Text = "Collect Offline Gold";
+            this.cbOfflineGold.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -471,11 +476,11 @@ namespace ScratchPad
         private System.Windows.Forms.CheckBox cbCollectAchievements;
         private System.Windows.Forms.TextBox tbAppRestartInterval;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox tbDeviceRestartInterval;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckBox cbMonitorOther;
         private System.Windows.Forms.CheckBox cbWave6;
         private System.Windows.Forms.Button btnSet;
+        private System.Windows.Forms.CheckBox cbOfflineGold;
+        private System.Windows.Forms.CheckBox cbSleepy;
     }
 }
 

@@ -14,8 +14,11 @@ namespace SGG.Utils
         public static bool StopAtWave6 = false;
         public static Point MapPoint = new Point(179, 612);
         public static string AppRestartInterval = "-1";
-        public static string DeviceRestartInterval = "-1";
+        //public static string DeviceRestartInterval = "-1";
 
+        public static bool SleepySummonerMode = true;
+        public static bool CollectOfflineGold = false;
+        
         public static bool SellerGems = false;
         public static bool SellerOrbs = true;
         public static bool SellerOther = true;
@@ -27,6 +30,7 @@ namespace SGG.Utils
         public static bool MonitorOther = true;
 
         public static string WebhookUrl = "";
+        
 
         public static void Save() {
             var sb = new StringBuilder();
@@ -38,7 +42,7 @@ namespace SGG.Utils
             sb.AppendLine(MapPoint.X.ToString());
             sb.AppendLine(MapPoint.Y.ToString());
             sb.AppendLine(AppRestartInterval);
-            sb.AppendLine(DeviceRestartInterval);
+            sb.AppendLine("");
             
             sb.AppendLine(SellerGems.ToString());
             sb.AppendLine(SellerOrbs.ToString());
@@ -52,6 +56,9 @@ namespace SGG.Utils
 
             sb.AppendLine(WebhookUrl);
 
+            sb.AppendLine(SleepySummonerMode.ToString());
+            sb.AppendLine(CollectOfflineGold.ToString());
+
             if (File.Exists("settings.txt"))
                 File.Delete("settings.txt");
             File.WriteAllText("settings.txt", sb.ToString());
@@ -62,27 +69,36 @@ namespace SGG.Utils
                 return;
 
             var lines = File.ReadAllLines("settings.txt");
+
+            try {
+                AdbHost = lines[0];
+                AdbPort = lines[1];
+                CollectAchievements = bool.Parse(lines[2]);
+                CollectWeeklies = bool.Parse(lines[3]);
+                StopAtWave6 = bool.Parse(lines[4]);
+                MapPoint = new Point(int.Parse(lines[5]), int.Parse(lines[6]));
+                AppRestartInterval = lines[7];
+                //DeviceRestartInterval = lines[8];
+
+                SellerGems = bool.Parse(lines[9]);
+                SellerOrbs = bool.Parse(lines[10]);
+                SellerOther = bool.Parse(lines[11]);
+
+                MonitorGems = bool.Parse(lines[12]);
+                MonitorOrbs = bool.Parse(lines[13]);
+                MonitorAttack = bool.Parse(lines[14]);
+                MonitorCoins = bool.Parse(lines[15]);
+                MonitorOther = bool.Parse(lines[16]);
+
+                WebhookUrl = lines[17];
+
+                SleepySummonerMode = bool.Parse(lines[18]);
+                CollectOfflineGold = bool.Parse(lines[19]);
+            }
+            catch {
+                ;
+            }
             
-            AdbHost = lines[0];
-            AdbPort = lines[1];
-            CollectAchievements = bool.Parse(lines[2]);
-            CollectWeeklies = bool.Parse(lines[3]);
-            StopAtWave6 = bool.Parse(lines[4]);
-            MapPoint = new Point(int.Parse(lines[5]), int.Parse(lines[6]));
-            AppRestartInterval = lines[7];
-            DeviceRestartInterval = lines[8];
-
-            SellerGems = bool.Parse(lines[9]);
-            SellerOrbs = bool.Parse(lines[10]);
-            SellerOther = bool.Parse(lines[11]);
-
-            MonitorGems = bool.Parse(lines[12]);
-            MonitorOrbs = bool.Parse(lines[13]);
-            MonitorAttack = bool.Parse(lines[14]);
-            MonitorCoins = bool.Parse(lines[15]);
-            MonitorOther = bool.Parse(lines[16]);
-
-            WebhookUrl = lines[17];
         }
     }
 }

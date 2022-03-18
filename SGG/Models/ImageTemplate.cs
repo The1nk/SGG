@@ -29,7 +29,8 @@ namespace SGG.Models
             Seller_Stones,
             Wave6,
             WinScreen,
-            MapSelect
+            MapSelect,
+            OfflineGold
         }
 
         static ImageTemplates() {
@@ -50,6 +51,7 @@ namespace SGG.Models
             lst.Add(ImageTemplate.FromBitmap(TemplateType.Wave6, "Wave 6.bmp"));
             lst.Add(ImageTemplate.FromBitmap(TemplateType.WinScreen, "Win Screen.bmp"));
             lst.Add(ImageTemplate.FromBitmap(TemplateType.MapSelect, "Map Select.bmp"));
+            lst.Add(ImageTemplate.FromBitmap(TemplateType.OfflineGold, "Offline Gold.bmp"));
 
             _templates = lst;
         }

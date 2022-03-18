@@ -32,6 +32,7 @@ namespace ScratchPad {
         private string _setting = string.Empty;
 
         private Point _selectedMapPoint = new Point(179, 612);
+        private DateTime _waitUntilNowForSleepySummoner = DateTime.MinValue;
 
         public Form1() {
             InitializeComponent();
@@ -46,7 +47,7 @@ namespace ScratchPad {
             cbWave6.Checked = Settings.StopAtWave6;
             _selectedMapPoint = Settings.MapPoint;
             tbAppRestartInterval.Text = Settings.AppRestartInterval;
-            tbDeviceRestartInterval.Text = Settings.DeviceRestartInterval;
+            //tbDeviceRestartInterval.Text = Settings.DeviceRestartInterval;
             cbSellerGems.Checked = Settings.SellerGems;
             cbSellerOrbs.Checked = Settings.SellerOrbs;
             cbSellerOther.Checked = Settings.SellerOther;
@@ -80,7 +81,7 @@ namespace ScratchPad {
             Settings.StopAtWave6 =  cbWave6.Checked;
             Settings.MapPoint =  _selectedMapPoint;
             Settings.AppRestartInterval =  tbAppRestartInterval.Text;
-            Settings.DeviceRestartInterval =  tbDeviceRestartInterval.Text;
+            //Settings.DeviceRestartInterval =  tbDeviceRestartInterval.Text;
             Settings.SellerGems =  cbSellerGems.Checked;
             Settings.SellerOrbs =  cbSellerOrbs.Checked;
             Settings.SellerOther =  cbSellerOther.Checked;
@@ -90,6 +91,8 @@ namespace ScratchPad {
             Settings.MonitorOrbs =  cbMonitorOrbs.Checked;
             Settings.MonitorOther =  cbMonitorOther.Checked;
             Settings.WebhookUrl =  tbDiscordHookUrl.Text;
+            Settings.SleepySummonerMode = cbSleepy.Checked;
+            Settings.CollectOfflineGold = cbOfflineGold.Checked;
             Settings.Save();
 
             if (_initialized)
@@ -139,13 +142,15 @@ namespace ScratchPad {
 
                 }
 
-                if (cbWave6.Checked && await CheckForWave6Reset(bmp))
-                    return;
-
-                if (await CheckForMapSelect(bmp)) return;
-                if (await CheckForConfirm(bmp)) return;
                 if (await CheckForMotd(bmp)) return;
                 if (await CheckForOffer(bmp)) return;
+                if (await CheckForOfflineGold(bmp)) return;
+                if (await CheckForSleepySummoner()) return;
+
+                if (await CheckForWave6Reset(bmp)) return;
+                if (await CheckForMapSelect(bmp)) return;
+                if (await CheckForConfirm(bmp)) return;
+                
                 if (await CheckForSpeedMultiplier(bmp)) return;
                 if (await CheckForWin(bmp)) return;
                 if (await CheckForLose(bmp)) return;
@@ -168,6 +173,22 @@ namespace ScratchPad {
                     _running = false;
                 }
             }
+        }
+
+        private async Task<bool> CheckForSleepySummoner() {
+            if (!cbSleepy.Checked) return false;
+            return !(DateTime.Now >= _waitUntilNowForSleepySummoner);
+        }
+
+        private async Task<bool> CheckForOfflineGold(Image image) {
+            if (!cbOfflineGold.Checked) return false;
+            if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.OfflineGold).IsPresentOn(image)) return false;
+
+            ClickAt(448, 1204, 1);
+            ClickAt(250, 1084);
+            SendBackButton(0);
+            _nextActionAvailableAt = DateTime.Now.AddSeconds(.2);
+            return false;
         }
 
         private async Task<bool> CheckForAd(ImageTemplates.TemplateType adType, Image clone, CheckBox checkbox) {
@@ -248,6 +269,7 @@ namespace ScratchPad {
         }
 
         private async Task<bool> CheckForWave6Reset(Image image) {
+            if (!cbWave6.Checked) return false;
             if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.Wave6).IsPresentOn(image)) return false;
 
             // Pop map select
@@ -293,6 +315,7 @@ namespace ScratchPad {
             DiscordLogger.Log(DiscordLogger.MessageType.Debug, "Dismissing sale popup");
             ClickAt(835, 277);
             _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
+            _waitUntilNowForSleepySummoner = DateTime.Now.AddSeconds(40);
             return true;
         }
 
@@ -313,6 +336,7 @@ namespace ScratchPad {
             DiscordLogger.Log(DiscordLogger.MessageType.Debug, "Dismissing MOTD");
             ClickAt(844, 307);
             _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
+            _waitUntilNowForSleepySummoner = DateTime.Now.AddSeconds(40);
             return true;
         }
 
@@ -353,8 +377,7 @@ namespace ScratchPad {
             } else {
                 var counter = 1;
                 while (_lastCaptures.TryDequeue(out var img)) {
-                    var path = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                        "SSG Screens");
+                    var path = ("C:\\SSG Screens");
                     if (!System.IO.Directory.Exists(path))
                         System.IO.Directory.CreateDirectory(path);
 

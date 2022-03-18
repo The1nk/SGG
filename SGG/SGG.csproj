@@ -64,6 +64,9 @@
     <None Update="Templates\Offer popup.bmp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Templates\Offline Gold.bmp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Templates\Seller_Gems.bmp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
