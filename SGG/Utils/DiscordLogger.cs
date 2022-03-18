@@ -17,7 +17,7 @@ namespace SGG.Utils
 
         public static void SetUrl(string url) => _hookUrl = url;
 
-        public static async Task Log(MessageType type, string message) {
+        public static async void Log(MessageType type, string message) {
             if (string.IsNullOrEmpty(_hookUrl))
                 return;
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -23,15 +24,15 @@ namespace ScratchPad {
         private ScreenCaptureWorker _screenCaptureWorker;
         private DateTime _nextActionAvailableAt;
         private readonly object _lockObject = new object();
+        private bool _running;
         private int _currentRun = 0;
         private int _currentRunAbs = 0;
-
 
         private ContextMenuStrip _contextMenu;
         private string _setting = string.Empty;
 
         private Point _selectedMapPoint = new Point(179, 612);
-        
+
         public Form1() {
             InitializeComponent();
             _lastCaptures = new Queue<Image>();
@@ -115,17 +116,23 @@ namespace ScratchPad {
                     ex.Message.StartsWith("No connection could be made because the target machine actively refused it.")
                         ? $"Unable to connect to ADB server. Please ensure it's running.\r\n\r\n{ex.Message}"
                         : ex.Message;
-                DiscordLogger.Log(DiscordLogger.MessageType.Error, msg).Wait(500);
+                DiscordLogger.Log(DiscordLogger.MessageType.Error, msg);
                 MessageBox.Show(msg);
             }
         }
 
         private async void RunBot(Image obj) {
-            if (!Monitor.TryEnter(_lockObject, 20)) return;
-
             try {
-                if (DateTime.Now <= _nextActionAvailableAt) return;
+                if (_running || DateTime.Now <= _nextActionAvailableAt)
+                    return;
 
+                lock (_lockObject) {
+                    if (_running)
+                        return;
+
+                    _running = true;
+                }
+                
                 Bitmap bmp;
                 lock (obj) {
                     bmp = new Bitmap((Image) obj.Clone());
@@ -154,10 +161,12 @@ namespace ScratchPad {
                 if (await CheckForSale(ImageTemplates.TemplateType.Seller_Stones, bmp, cbSellerOther)) return;
             }
             catch (Exception ex) {
-                await DiscordLogger.Log(DiscordLogger.MessageType.Error, $"{ex.Message}\r\n{ex.StackTrace}");
+                DiscordLogger.Log(DiscordLogger.MessageType.Error, $"{ex.Message}\r\n{ex.StackTrace}");
             }
             finally {
-                Monitor.Exit(_lockObject);
+                lock (_lockObject) {
+                    _running = false;
+                }
             }
         }
 
@@ -167,13 +176,13 @@ namespace ScratchPad {
 
             if (ret) {
                 if (enabled) {
-                    await DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Watching Monitor for {adType}");
+                    DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Watching Monitor for {adType}");
                     ClickAt(494, 915, 45);
                     SendBackButton(2);
                     ClickAt(494, 915);
                 }
                 else {
-                    await DiscordLogger.Log(DiscordLogger.MessageType.Debug, $"Skipping Monitor for {adType}");
+                    DiscordLogger.Log(DiscordLogger.MessageType.Debug, $"Skipping Monitor for {adType}");
                     ClickAt(243, 847);
                     _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
                 }
@@ -192,13 +201,13 @@ namespace ScratchPad {
 
             if (ret) {
                 if (enabled) {
-                    await DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Accepting Seller for {saleType}");
+                    DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Accepting Seller for {saleType}");
                     ClickAt(494, 915, 1);
                     ClickAt(494, 915);
                     _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
                 }
                 else {
-                    await DiscordLogger.Log(DiscordLogger.MessageType.Debug, $"Skipping Seller for {saleType}");
+                    DiscordLogger.Log(DiscordLogger.MessageType.Debug, $"Skipping Seller for {saleType}");
                     ClickAt(243, 847);
                     _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
                 }
@@ -211,7 +220,7 @@ namespace ScratchPad {
             if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.ConfirmLayout).IsPresentOn(image)) return false;
 
             // Dismiss
-            await DiscordLogger.Log(DiscordLogger.MessageType.Info, "Confirming layout");
+            DiscordLogger.Log(DiscordLogger.MessageType.Info, "Confirming layout");
             ClickAt(433, 1505);
             _nextActionAvailableAt = DateTime.Now.AddSeconds(.5);
             return true;
@@ -221,7 +230,7 @@ namespace ScratchPad {
             if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.LoseScreen).IsPresentOn(image)) return false;
 
             // Dismiss
-            await DiscordLogger.Log(DiscordLogger.MessageType.Info, "Dismissing 'Lose' screen");
+            DiscordLogger.Log(DiscordLogger.MessageType.Info, "Dismissing 'Lose' screen");
             ClickAt(252, 1211, 2);
             ClickAt(283, 1059);
             _nextActionAvailableAt = DateTime.Now.AddSeconds(1);
@@ -232,7 +241,7 @@ namespace ScratchPad {
             if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.WinScreen).IsPresentOn(image)) return false;
 
             // Dismiss
-            await DiscordLogger.Log(DiscordLogger.MessageType.Info, "Dismissing 'Win' screen");
+            DiscordLogger.Log(DiscordLogger.MessageType.Info, "Dismissing 'Win' screen");
             ClickAt(444, 1222);
             _nextActionAvailableAt = DateTime.Now.AddSeconds(.5);
             return true;
@@ -242,7 +251,7 @@ namespace ScratchPad {
             if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.Wave6).IsPresentOn(image)) return false;
 
             // Pop map select
-            await DiscordLogger.Log(DiscordLogger.MessageType.Info, "Resetting after Wave 6");
+            DiscordLogger.Log(DiscordLogger.MessageType.Info, "Resetting after Wave 6");
             ClickAt(790, 47);
             _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
             return true;
@@ -255,23 +264,23 @@ namespace ScratchPad {
 
             _currentRun++;
             _currentRunAbs++;
-            await DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Starting run #{_currentRunAbs:#,##0}..");
+            DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Starting run #{_currentRunAbs:#,##0}..");
 
             if (restartInterval > 0) {
-                await DiscordLogger.Log(DiscordLogger.MessageType.Info,
+                DiscordLogger.Log(DiscordLogger.MessageType.Info,
                     $"Run #{_currentRun:#,##0} of {restartInterval:#,##0}..");
 
                 if (_currentRun > restartInterval) {
                     // Kill app
-                    await DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Restarting app!");
+                    DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Restarting app!");
                     _client.ExecuteShellCommand(_device, "am force-stop com.pixio.google.mtd;sleep 5;monkey -p com.pixio.google.mtd 15;sleep 5", null);
-                    await DiscordLogger.Log(DiscordLogger.MessageType.Info, $"App restarted..?");
+                    DiscordLogger.Log(DiscordLogger.MessageType.Info, $"App restarted..?");
                     _currentRun = 0;
                 }
             }
 
             // Dismiss
-            await DiscordLogger.Log(DiscordLogger.MessageType.Info, "Selecting map");
+            DiscordLogger.Log(DiscordLogger.MessageType.Info, "Selecting map");
             ClickAt(_selectedMapPoint.X, _selectedMapPoint.Y);
             _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
             return true;
@@ -281,7 +290,7 @@ namespace ScratchPad {
             if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.OfferPopup).IsPresentOn(image)) return false;
 
             // Dismiss
-            await DiscordLogger.Log(DiscordLogger.MessageType.Debug, "Dismissing sale popup");
+            DiscordLogger.Log(DiscordLogger.MessageType.Debug, "Dismissing sale popup");
             ClickAt(835, 277);
             _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
             return true;
@@ -291,7 +300,7 @@ namespace ScratchPad {
             if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.SpeedMult1x).IsPresentOn(image)) return false;
 
             // Toggle it
-            await DiscordLogger.Log(DiscordLogger.MessageType.Debug, "Enabling 2x speed");
+            DiscordLogger.Log(DiscordLogger.MessageType.Debug, "Enabling 2x speed");
             ClickAt(69, 1394);
             _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
             return true;
@@ -301,7 +310,7 @@ namespace ScratchPad {
             if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.MotdPopup).IsPresentOn(image)) return false;
 
             // Dismiss it!
-            await DiscordLogger.Log(DiscordLogger.MessageType.Debug, "Dismissing MOTD");
+            DiscordLogger.Log(DiscordLogger.MessageType.Debug, "Dismissing MOTD");
             ClickAt(844, 307);
             _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
             return true;
