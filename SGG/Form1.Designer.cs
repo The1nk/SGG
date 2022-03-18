@@ -119,7 +119,7 @@ namespace ScratchPad
             this.btnStart.TabIndex = 11;
             this.btnStart.Text = "Start";
             this.btnStart.UseVisualStyleBackColor = true;
-            this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
+            this.btnStart.Click += new System.EventHandler(this.Start_Click);
             // 
             // panel1
             // 
@@ -176,7 +176,7 @@ namespace ScratchPad
             this.btnSet.TabIndex = 10;
             this.btnSet.Text = "Set ...";
             this.btnSet.UseVisualStyleBackColor = true;
-            this.btnSet.Click += new System.EventHandler(this.btnSet_Click);
+            this.btnSet.Click += new System.EventHandler(this.Set_Click);
             // 
             // cbWave6
             // 
@@ -413,7 +413,7 @@ namespace ScratchPad
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 10;
             this.pictureBox1.TabStop = false;
-            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
+            this.pictureBox1.Click += new System.EventHandler(this.PictureBox1_Click);
             // 
             // Form1
             // 

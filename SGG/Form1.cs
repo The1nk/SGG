@@ -120,7 +120,7 @@ namespace ScratchPad {
             }
         }
 
-        private void RunBot(Image obj) {
+        private async void RunBot(Image obj) {
             if (!Monitor.TryEnter(_lockObject, 20)) return;
 
             try {
@@ -131,49 +131,49 @@ namespace ScratchPad {
                     bmp = new Bitmap((Image) obj.Clone());
 
                 }
-                if (cbWave6.Checked)
-                    CheckForWave6Reset(bmp);
 
-                CheckForMapSelect(bmp);
-                CheckForConfirm(bmp);
-                CheckForMotd(bmp);
-                CheckForOffer(bmp);
-                CheckForSpeedMultiplier(bmp);
-                CheckForWin(bmp);
-                CheckForLose(bmp);
+                if (cbWave6.Checked && await CheckForWave6Reset(bmp))
+                    return;
 
-                if (CheckForAd(ImageTemplates.TemplateType.Ad_Attack, bmp, cbMonitorAttack)) return;
-                if (CheckForAd(ImageTemplates.TemplateType.Ad_Coins, bmp, cbMonitorCoins)) return;
-                if (CheckForAd(ImageTemplates.TemplateType.Ad_Gems, bmp, cbMonitorGems)) return;
-                if (CheckForAd(ImageTemplates.TemplateType.Ad_Orbs, bmp, cbMonitorOrbs)) return;
-                if (CheckForAd(ImageTemplates.TemplateType.Ad_Stones, bmp, cbMonitorOther)) return;
+                if (await CheckForMapSelect(bmp)) return;
+                if (await CheckForConfirm(bmp)) return;
+                if (await CheckForMotd(bmp)) return;
+                if (await CheckForOffer(bmp)) return;
+                if (await CheckForSpeedMultiplier(bmp)) return;
+                if (await CheckForWin(bmp)) return;
+                if (await CheckForLose(bmp)) return;
 
-                if (CheckForSale(ImageTemplates.TemplateType.Seller_Gems, bmp, cbSellerGems)) return;
-                if (CheckForSale(ImageTemplates.TemplateType.Seller_Orbs, bmp, cbSellerOrbs)) return;
-                if (CheckForSale(ImageTemplates.TemplateType.Seller_Stones, bmp, cbSellerOther)) return;
+                if (await CheckForAd(ImageTemplates.TemplateType.Ad_Attack, bmp, cbMonitorAttack)) return;
+                if (await CheckForAd(ImageTemplates.TemplateType.Ad_Coins, bmp, cbMonitorCoins)) return;
+                if (await CheckForAd(ImageTemplates.TemplateType.Ad_Gems, bmp, cbMonitorGems)) return;
+                if (await CheckForAd(ImageTemplates.TemplateType.Ad_Orbs, bmp, cbMonitorOrbs)) return;
+                if (await CheckForAd(ImageTemplates.TemplateType.Ad_Stones, bmp, cbMonitorOther)) return;
+
+                if (await CheckForSale(ImageTemplates.TemplateType.Seller_Gems, bmp, cbSellerGems)) return;
+                if (await CheckForSale(ImageTemplates.TemplateType.Seller_Orbs, bmp, cbSellerOrbs)) return;
+                if (await CheckForSale(ImageTemplates.TemplateType.Seller_Stones, bmp, cbSellerOther)) return;
             }
             catch (Exception ex) {
-                DiscordLogger.Log(DiscordLogger.MessageType.Error, $"{ex.Message}\r\n{ex.StackTrace}").Wait(500);
-                Debug.WriteLine($"{ex.Message}\r\n{ex.StackTrace}");
+                await DiscordLogger.Log(DiscordLogger.MessageType.Error, $"{ex.Message}\r\n{ex.StackTrace}");
             }
             finally {
                 Monitor.Exit(_lockObject);
             }
         }
 
-        private bool CheckForAd(ImageTemplates.TemplateType adType, Image clone, CheckBox checkbox) {
+        private async Task<bool> CheckForAd(ImageTemplates.TemplateType adType, Image clone, CheckBox checkbox) {
             var ret = ImageTemplates.GetByType(adType).IsPresentOn(clone);
             var enabled = checkbox.Enabled && checkbox.Checked;
 
             if (ret) {
                 if (enabled) {
-                    DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Watching Monitor for {adType}");
+                    await DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Watching Monitor for {adType}");
                     ClickAt(494, 915, 45);
                     SendBackButton(2);
                     ClickAt(494, 915);
                 }
                 else {
-                    DiscordLogger.Log(DiscordLogger.MessageType.Debug, $"Skipping Monitor for {adType}");
+                    await DiscordLogger.Log(DiscordLogger.MessageType.Debug, $"Skipping Monitor for {adType}");
                     ClickAt(243, 847);
                     _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
                 }
@@ -186,19 +186,19 @@ namespace ScratchPad {
             _client.ExecuteShellCommand(_device, $"input keyevent 4;sleep {secondsDelay}", null);
         }
 
-        private bool CheckForSale(ImageTemplates.TemplateType saleType,  Image clone, CheckBox checkbox) {
+        private async Task<bool> CheckForSale(ImageTemplates.TemplateType saleType,  Image clone, CheckBox checkbox) {
             var ret = ImageTemplates.GetByType(saleType).IsPresentOn( clone);
             var enabled = checkbox.Enabled && checkbox.Checked;
 
             if (ret) {
                 if (enabled) {
-                    DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Accepting Seller for {saleType}");
+                    await DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Accepting Seller for {saleType}");
                     ClickAt(494, 915, 1);
                     ClickAt(494, 915);
                     _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
                 }
                 else {
-                    DiscordLogger.Log(DiscordLogger.MessageType.Debug, $"Skipping Seller for {saleType}");
+                    await DiscordLogger.Log(DiscordLogger.MessageType.Debug, $"Skipping Seller for {saleType}");
                     ClickAt(243, 847);
                     _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
                 }
@@ -207,98 +207,104 @@ namespace ScratchPad {
             return ret;
         }
 
-        private void CheckForConfirm(Image image) {
-            if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.ConfirmLayout).IsPresentOn(image)) return;
+        private async Task<bool> CheckForConfirm(Image image) {
+            if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.ConfirmLayout).IsPresentOn(image)) return false;
 
             // Dismiss
-            DiscordLogger.Log(DiscordLogger.MessageType.Info, "Confirming layout");
+            await DiscordLogger.Log(DiscordLogger.MessageType.Info, "Confirming layout");
             ClickAt(433, 1505);
             _nextActionAvailableAt = DateTime.Now.AddSeconds(.5);
+            return true;
         }
 
-        private void CheckForLose(Image image) {
-            if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.LoseScreen).IsPresentOn(image)) return;
+        private async Task<bool> CheckForLose(Image image) {
+            if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.LoseScreen).IsPresentOn(image)) return false;
 
             // Dismiss
-            DiscordLogger.Log(DiscordLogger.MessageType.Info, "Dismissing 'Lose' screen");
+            await DiscordLogger.Log(DiscordLogger.MessageType.Info, "Dismissing 'Lose' screen");
             ClickAt(252, 1211, 2);
             ClickAt(283, 1059);
             _nextActionAvailableAt = DateTime.Now.AddSeconds(1);
+            return true;
         }
 
-        private void CheckForWin(Image image) {
-            if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.WinScreen).IsPresentOn(image)) return;
+        private async Task<bool> CheckForWin(Image image) {
+            if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.WinScreen).IsPresentOn(image)) return false;
 
             // Dismiss
-            DiscordLogger.Log(DiscordLogger.MessageType.Info, "Dismissing 'Win' screen");
+            await DiscordLogger.Log(DiscordLogger.MessageType.Info, "Dismissing 'Win' screen");
             ClickAt(444, 1222);
             _nextActionAvailableAt = DateTime.Now.AddSeconds(.5);
+            return true;
         }
 
-        private void CheckForWave6Reset(Image image) {
-            if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.Wave6).IsPresentOn(image)) return;
+        private async Task<bool> CheckForWave6Reset(Image image) {
+            if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.Wave6).IsPresentOn(image)) return false;
 
             // Pop map select
-            DiscordLogger.Log(DiscordLogger.MessageType.Info, "Resetting after Wave 6");
+            await DiscordLogger.Log(DiscordLogger.MessageType.Info, "Resetting after Wave 6");
             ClickAt(790, 47);
             _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
+            return true;
         }
 
-        private void CheckForMapSelect(Image image) {
-            if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.MapSelect).IsPresentOn(image)) return;
+        private async Task<bool> CheckForMapSelect(Image image) {
+            if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.MapSelect).IsPresentOn(image)) return false;
 
-            int restartInterval = -1;
-            int.TryParse(tbAppRestartInterval.Text.Trim(), out restartInterval);
+            int.TryParse(tbAppRestartInterval.Text.Trim(), out var restartInterval);
 
             _currentRun++;
             _currentRunAbs++;
-            DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Starting run #{_currentRunAbs:#,##0}..");
+            await DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Starting run #{_currentRunAbs:#,##0}..");
 
             if (restartInterval > 0) {
-                DiscordLogger.Log(DiscordLogger.MessageType.Info,
+                await DiscordLogger.Log(DiscordLogger.MessageType.Info,
                     $"Run #{_currentRun:#,##0} of {restartInterval:#,##0}..");
+
                 if (_currentRun > restartInterval) {
                     // Kill app
-                    DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Restarting app!");
-                    _client.ExecuteShellCommand(_device, "am force-stop com.pixio.google.mtd;sleep 5;monkey -p com.pixio.google.mtd 15;sleep 10", null);
-                    DiscordLogger.Log(DiscordLogger.MessageType.Info, $"App restarted..?");
-                    _currentRun = -1;
-
-                    return;
+                    await DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Restarting app!");
+                    _client.ExecuteShellCommand(_device, "am force-stop com.pixio.google.mtd;sleep 5;monkey -p com.pixio.google.mtd 15;sleep 5", null);
+                    await DiscordLogger.Log(DiscordLogger.MessageType.Info, $"App restarted..?");
+                    _currentRun = 0;
                 }
             }
 
             // Dismiss
-            DiscordLogger.Log(DiscordLogger.MessageType.Info, "Selecting map");
+            await DiscordLogger.Log(DiscordLogger.MessageType.Info, "Selecting map");
             ClickAt(_selectedMapPoint.X, _selectedMapPoint.Y);
             _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
+            return true;
         }
 
-        private void CheckForOffer(Image image) {
-            if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.OfferPopup).IsPresentOn(image)) return;
+        private async Task<bool> CheckForOffer(Image image) {
+            if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.OfferPopup).IsPresentOn(image)) return false;
 
             // Dismiss
-            DiscordLogger.Log(DiscordLogger.MessageType.Debug, "Dismissing sale popup");
+            await DiscordLogger.Log(DiscordLogger.MessageType.Debug, "Dismissing sale popup");
             ClickAt(835, 277);
             _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
+            return true;
         }
 
-        private void CheckForSpeedMultiplier(Image image) {
-            if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.SpeedMult1x).IsPresentOn(image)) return;
+        private async Task<bool> CheckForSpeedMultiplier(Image image) {
+            if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.SpeedMult1x).IsPresentOn(image)) return false;
 
             // Toggle it
-            DiscordLogger.Log(DiscordLogger.MessageType.Debug, "Enabling 2x speed");
+            await DiscordLogger.Log(DiscordLogger.MessageType.Debug, "Enabling 2x speed");
             ClickAt(69, 1394);
             _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
+            return true;
         }
 
-        private void CheckForMotd(Image image) {
-            if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.MotdPopup).IsPresentOn(image)) return;
+        private async Task<bool> CheckForMotd(Image image) {
+            if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.MotdPopup).IsPresentOn(image)) return false;
 
             // Dismiss it!
-            DiscordLogger.Log(DiscordLogger.MessageType.Debug, "Dismissing MOTD");
+            await DiscordLogger.Log(DiscordLogger.MessageType.Debug, "Dismissing MOTD");
             ClickAt(844, 307);
             _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
+            return true;
         }
 
         private void ClickAt(int x, int y) {
@@ -309,7 +315,7 @@ namespace ScratchPad {
             _client.ExecuteShellCommand(_device, $"input tap {x} {y};sleep {secondsDelay}", null);
         }
 
-        private void btnStart_Click(object sender, EventArgs e) {
+        private void Start_Click(object sender, EventArgs e) {
             Init();
             if (btnStart.Text == "Start") {
                 _screenCaptureWorker.Start();
@@ -321,7 +327,7 @@ namespace ScratchPad {
             }
         }
 
-        private void pictureBox1_Click(object sender, EventArgs e) {
+        private void PictureBox1_Click(object sender, EventArgs e) {
             var mee = e as MouseEventArgs;
             if (mee.Button == MouseButtons.Left) {
                 var dbg = $"{mee.X}.{mee.Y}";
@@ -349,7 +355,7 @@ namespace ScratchPad {
             }
         }
 
-        private void btnSet_Click(object sender, EventArgs e) {
+        private void Set_Click(object sender, EventArgs e) {
             if (_contextMenu == null) {
                 var cmenu = new ContextMenuStrip();
                 cmenu.Items.Add("Map").Click += (o, args) => {
