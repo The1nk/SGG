@@ -29,7 +29,6 @@ namespace ScratchPad {
         private int _currentRunAbs = 0;
 
         private ContextMenuStrip _contextMenu;
-        private string _setting = string.Empty;
 
         private Point _selectedMapPoint = new Point(179, 612);
         private DateTime _waitUntilNowForSleepySummoner = DateTime.MinValue;
@@ -145,15 +144,16 @@ namespace ScratchPad {
                 if (await CheckForMotd(bmp)) return;
                 if (await CheckForOffer(bmp)) return;
                 if (await CheckForOfflineGold(bmp)) return;
-                if (await CheckForSleepySummoner()) return;
-
-                if (await CheckForWave6Reset(bmp)) return;
-                if (await CheckForMapSelect(bmp)) return;
-                if (await CheckForConfirm(bmp)) return;
                 
-                if (await CheckForSpeedMultiplier(bmp)) return;
+                if (await CheckForWave6Reset(bmp)) return;
                 if (await CheckForWin(bmp)) return;
                 if (await CheckForLose(bmp)) return;
+                if (await CheckForMapSelect(bmp)) return;
+                if (await CheckForConfirm(bmp)) return;
+
+                if (await CheckForSleepySummoner()) return;
+                
+                if (await CheckForSpeedMultiplier(bmp)) return;
 
                 if (await CheckForAd(ImageTemplates.TemplateType.Ad_Attack, bmp, cbMonitorAttack)) return;
                 if (await CheckForAd(ImageTemplates.TemplateType.Ad_Coins, bmp, cbMonitorCoins)) return;
@@ -184,6 +184,7 @@ namespace ScratchPad {
             if (!cbOfflineGold.Checked) return false;
             if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.OfflineGold).IsPresentOn(image)) return false;
 
+            DiscordLogger.Log(DiscordLogger.MessageType.Info, "Collecting offline gold");
             ClickAt(448, 1204, 1);
             ClickAt(250, 1084);
             SendBackButton(0);
@@ -351,10 +352,12 @@ namespace ScratchPad {
         private void Start_Click(object sender, EventArgs e) {
             Init();
             if (btnStart.Text == "Start") {
+                DiscordLogger.Log(DiscordLogger.MessageType.Info, "Starting bot");
                 _screenCaptureWorker.Start();
                 btnStart.Text = "Stop";
             }
             else if (btnStart.Text == "Stop") {
+                DiscordLogger.Log(DiscordLogger.MessageType.Info, "Stopping bot");
                 _screenCaptureWorker.Stop();
                 btnStart.Text = "Start";
             }
