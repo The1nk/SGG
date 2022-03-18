@@ -38,6 +38,8 @@ namespace ScratchPad
             this.panel1 = new System.Windows.Forms.Panel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.cbOfflineGold = new System.Windows.Forms.CheckBox();
+            this.cbSleepy = new System.Windows.Forms.CheckBox();
             this.btnSet = new System.Windows.Forms.Button();
             this.cbWave6 = new System.Windows.Forms.CheckBox();
             this.tbAppRestartInterval = new System.Windows.Forms.TextBox();
@@ -58,8 +60,6 @@ namespace ScratchPad
             this.tbDiscordHookUrl = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.cbSleepy = new System.Windows.Forms.CheckBox();
-            this.cbOfflineGold = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -168,13 +168,37 @@ namespace ScratchPad
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "General";
             // 
+            // cbOfflineGold
+            // 
+            this.cbOfflineGold.AutoSize = true;
+            this.cbOfflineGold.Checked = true;
+            this.cbOfflineGold.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbOfflineGold.Location = new System.Drawing.Point(6, 147);
+            this.cbOfflineGold.Name = "cbOfflineGold";
+            this.cbOfflineGold.Size = new System.Drawing.Size(162, 24);
+            this.cbOfflineGold.TabIndex = 12;
+            this.cbOfflineGold.Text = "Collect Offline Gold";
+            this.cbOfflineGold.UseVisualStyleBackColor = true;
+            // 
+            // cbSleepy
+            // 
+            this.cbSleepy.AutoSize = true;
+            this.cbSleepy.Checked = true;
+            this.cbSleepy.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbSleepy.Location = new System.Drawing.Point(6, 117);
+            this.cbSleepy.Name = "cbSleepy";
+            this.cbSleepy.Size = new System.Drawing.Size(194, 24);
+            this.cbSleepy.TabIndex = 11;
+            this.cbSleepy.Text = "Sleepy Summoner Mode";
+            this.cbSleepy.UseVisualStyleBackColor = true;
+            // 
             // btnSet
             // 
             this.btnSet.Location = new System.Drawing.Point(196, 27);
             this.btnSet.Name = "btnSet";
             this.btnSet.Size = new System.Drawing.Size(94, 29);
             this.btnSet.TabIndex = 10;
-            this.btnSet.Text = "Set ...";
+            this.btnSet.Text = "Set Map";
             this.btnSet.UseVisualStyleBackColor = true;
             this.btnSet.Click += new System.EventHandler(this.Set_Click);
             // 
@@ -395,30 +419,6 @@ namespace ScratchPad
             this.pictureBox1.TabIndex = 10;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.Click += new System.EventHandler(this.PictureBox1_Click);
-            // 
-            // cbSleepy
-            // 
-            this.cbSleepy.AutoSize = true;
-            this.cbSleepy.Checked = true;
-            this.cbSleepy.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbSleepy.Location = new System.Drawing.Point(6, 117);
-            this.cbSleepy.Name = "cbSleepy";
-            this.cbSleepy.Size = new System.Drawing.Size(194, 24);
-            this.cbSleepy.TabIndex = 11;
-            this.cbSleepy.Text = "Sleepy Summoner Mode";
-            this.cbSleepy.UseVisualStyleBackColor = true;
-            // 
-            // cbOfflineGold
-            // 
-            this.cbOfflineGold.AutoSize = true;
-            this.cbOfflineGold.Checked = true;
-            this.cbOfflineGold.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbOfflineGold.Location = new System.Drawing.Point(6, 147);
-            this.cbOfflineGold.Name = "cbOfflineGold";
-            this.cbOfflineGold.Size = new System.Drawing.Size(162, 24);
-            this.cbOfflineGold.TabIndex = 12;
-            this.cbOfflineGold.Text = "Collect Offline Gold";
-            this.cbOfflineGold.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 

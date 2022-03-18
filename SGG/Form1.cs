@@ -362,19 +362,13 @@ namespace ScratchPad {
 
         private void PictureBox1_Click(object sender, EventArgs e) {
             var mee = e as MouseEventArgs;
-            if (mee.Button == MouseButtons.Left) {
+            if (mee.Button == MouseButtons.Middle) {
                 var dbg = $"{mee.X}.{mee.Y}";
                 dbg += "\r\n";
                 var pt = Utils.TranslateZoomMousePosition(pictureBox1.Image, pictureBox1, mee.Location);
                 dbg += $"{pt.X}.{pt.Y}";
-
-                if (_setting == string.Empty) {
-                    MessageBox.Show(dbg);
-                } else if (_setting == "Map") {
-                    _selectedMapPoint = new Point(pt.X, pt.Y);
-                    pictureBox1.Cursor = Cursors.Default;
-                }
-            } else {
+                MessageBox.Show(dbg);
+            } else if (mee.Button == MouseButtons.Right) {
                 var counter = 1;
                 while (_lastCaptures.TryDequeue(out var img)) {
                     var path = ("C:\\SSG Screens");
@@ -390,10 +384,40 @@ namespace ScratchPad {
         private void Set_Click(object sender, EventArgs e) {
             if (_contextMenu == null) {
                 var cmenu = new ContextMenuStrip();
-                cmenu.Items.Add("Map").Click += (o, args) => {
-                    _setting = "Map";
-                    pictureBox1.Cursor = Cursors.Cross;
+                cmenu.Font = new Font(FontFamily.GenericMonospace, cmenu.Font.SizeInPoints);
+
+                cmenu.Items.Add("The King                 Normal").Click += (o, args) => {
+                    _selectedMapPoint = new Point(171, 606);
                 };
+                cmenu.Items.Add("The King                 Hard").Click += (o, args) => {
+                    _selectedMapPoint = new Point(451, 606);
+                };
+                cmenu.Items.Add("The King                 Nightmare").Click += (o, args) => {
+                    _selectedMapPoint = new Point(732, 606);
+                };
+                cmenu.Items.Add("-------------");
+
+                cmenu.Items.Add("Ragefist Chieftain       Normal").Click += (o, args) => {
+                    _selectedMapPoint = new Point(171, 955);
+                };
+                cmenu.Items.Add("Ragefist Chieftain       Hard").Click += (o, args) => {
+                    _selectedMapPoint = new Point(451, 955);
+                };
+                cmenu.Items.Add("Ragefist Chieftain       Nightmare").Click += (o, args) => {
+                    _selectedMapPoint = new Point(732, 955);
+                };
+                cmenu.Items.Add("-------------");
+
+                cmenu.Items.Add("The Joint Revenge        Normal").Click += (o, args) => {
+                    _selectedMapPoint = new Point(171, 1266);
+                };
+                cmenu.Items.Add("The Joint Revenge        Hard").Click += (o, args) => {
+                    _selectedMapPoint = new Point(451, 1266);
+                };
+                cmenu.Items.Add("The Joint Revenge        Nightmare").Click += (o, args) => {
+                    _selectedMapPoint = new Point(732, 1266);
+                };
+
 
                 _contextMenu = cmenu;
             }
