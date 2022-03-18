@@ -143,16 +143,17 @@ namespace ScratchPad {
 
                 if (await CheckForMotd(bmp)) return;
                 if (await CheckForOffer(bmp)) return;
-                if (await CheckForOfflineGold(bmp)) return;
+
+                if (cbSleepy.Checked && DateTime.Now < _waitUntilNowForSleepySummoner)
+                    return;
                 
+                if (await CheckForOfflineGold(bmp)) return;
                 if (await CheckForWave6Reset(bmp)) return;
                 if (await CheckForWin(bmp)) return;
                 if (await CheckForLose(bmp)) return;
                 if (await CheckForMapSelect(bmp)) return;
                 if (await CheckForConfirm(bmp)) return;
 
-                if (await CheckForSleepySummoner()) return;
-                
                 if (await CheckForSpeedMultiplier(bmp)) return;
 
                 if (await CheckForAd(ImageTemplates.TemplateType.Ad_Attack, bmp, cbMonitorAttack)) return;
@@ -173,11 +174,6 @@ namespace ScratchPad {
                     _running = false;
                 }
             }
-        }
-
-        private async Task<bool> CheckForSleepySummoner() {
-            if (!cbSleepy.Checked) return false;
-            return !(DateTime.Now >= _waitUntilNowForSleepySummoner);
         }
 
         private async Task<bool> CheckForOfflineGold(Image image) {
