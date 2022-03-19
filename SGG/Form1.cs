@@ -151,19 +151,7 @@ namespace ScratchPad {
                 if (cbSleepy.Checked) {
                     if (DateTime.Now < _waitUntilNowForSleepySummoner)
                         return;
-
-                    if (await CheckForSmiles(bmp))
-                        return;
                 }
-                
-                if (await CheckForOfflineGold(bmp)) return;
-                if (await CheckForWave6Reset(bmp)) return;
-                if (await CheckForWin(bmp)) return;
-                if (await CheckForLose(bmp)) return;
-                if (await CheckForMapSelect(bmp)) return;
-                if (await CheckForConfirm(bmp)) return;
-
-                if (await CheckForSpeedMultiplier(bmp)) return;
 
                 if (await CheckForAd(ImageTemplates.TemplateType.Ad_Attack, bmp, cbMonitorAttack)) return;
                 if (await CheckForAd(ImageTemplates.TemplateType.Ad_Coins, bmp, cbMonitorCoins)) return;
@@ -174,6 +162,18 @@ namespace ScratchPad {
                 if (await CheckForSale(ImageTemplates.TemplateType.Seller_Gems, bmp, cbSellerGems)) return;
                 if (await CheckForSale(ImageTemplates.TemplateType.Seller_Orbs, bmp, cbSellerOrbs)) return;
                 if (await CheckForSale(ImageTemplates.TemplateType.Seller_Stones, bmp, cbSellerOther)) return;
+
+                if (cbSleepy.Checked && await CheckForSmiles(bmp))
+                    return;
+                
+                if (await CheckForOfflineGold(bmp)) return;
+                if (await CheckForWave6Reset(bmp)) return;
+                if (await CheckForWin(bmp)) return;
+                if (await CheckForLose(bmp)) return;
+                if (await CheckForMapSelect(bmp)) return;
+                if (await CheckForConfirm(bmp)) return;
+
+                if (await CheckForSpeedMultiplier(bmp)) return;
             }
             catch (Exception ex) {
                 DiscordLogger.Log(DiscordLogger.MessageType.Error, $"{ex.Message}\r\n{ex.StackTrace}");
