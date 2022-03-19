@@ -272,7 +272,13 @@ namespace ScratchPad {
 
         private async Task<bool> CheckForWave6Reset(Image image) {
             if (!cbWave6.Checked) return false;
-            if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.Wave6).IsPresentOn(image)) return false;
+
+            if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.On_A_Map).IsPresentOn(image)) return false;
+            if (ImageTemplates.GetByType(ImageTemplates.TemplateType.Wave1).IsPresentOn(image)) return false;
+            if (ImageTemplates.GetByType(ImageTemplates.TemplateType.Wave2).IsPresentOn(image)) return false;
+            if (ImageTemplates.GetByType(ImageTemplates.TemplateType.Wave3).IsPresentOn(image)) return false;
+            if (ImageTemplates.GetByType(ImageTemplates.TemplateType.Wave4).IsPresentOn(image)) return false;
+            if (ImageTemplates.GetByType(ImageTemplates.TemplateType.Wave5).IsPresentOn(image)) return false;
 
             // Pop map select
             DiscordLogger.Log(DiscordLogger.MessageType.Info, "Resetting after Wave 6");

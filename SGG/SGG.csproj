@@ -70,6 +70,9 @@
     <None Update="Templates\Offline Gold.bmp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Templates\On A Map.bmp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Templates\Seller_Gems.bmp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

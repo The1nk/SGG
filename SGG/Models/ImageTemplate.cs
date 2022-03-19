@@ -28,7 +28,12 @@ namespace SGG.Models
             Seller_Gems,
             Seller_Orbs,
             Seller_Stones,
-            Wave6,
+            On_A_Map,
+            Wave1,
+            Wave2,
+            Wave3,
+            Wave4,
+            Wave5,
             WinScreen,
             MapSelect,
             OfflineGold,
@@ -51,7 +56,12 @@ namespace SGG.Models
             lst.Add(ImageTemplate.FromBitmap(TemplateType.Seller_Gems, "Seller_Gems.bmp"));
             lst.Add(ImageTemplate.FromBitmap(TemplateType.Seller_Orbs, "Seller_Orbs.bmp"));
             lst.Add(ImageTemplate.FromBitmap(TemplateType.Seller_Stones, "Seller_Stones.bmp"));
-            lst.Add(ImageTemplate.FromBitmap(TemplateType.Wave6, "Wave 6.bmp"));
+            lst.Add(ImageTemplate.FromBitmap(TemplateType.On_A_Map, "On A Map.bmp"));
+            lst.Add(ImageTemplate.FromBitmap(TemplateType.Wave1, "Wave 1.bmp"));
+            lst.Add(ImageTemplate.FromBitmap(TemplateType.Wave2, "Wave 2.bmp"));
+            lst.Add(ImageTemplate.FromBitmap(TemplateType.Wave3, "Wave 3.bmp"));
+            lst.Add(ImageTemplate.FromBitmap(TemplateType.Wave4, "Wave 4.bmp"));
+            lst.Add(ImageTemplate.FromBitmap(TemplateType.Wave5, "Wave 5.bmp"));
             lst.Add(ImageTemplate.FromBitmap(TemplateType.WinScreen, "Win Screen.bmp"));
             lst.Add(ImageTemplate.FromBitmap(TemplateType.MapSelect, "Map Select.bmp"));
             lst.Add(ImageTemplate.FromBitmap(TemplateType.OfflineGold, "Offline Gold.bmp"));
