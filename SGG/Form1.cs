@@ -71,28 +71,7 @@ namespace ScratchPad {
         }
 
         private void Init() {
-            DiscordLogger.SetUrl(tbDiscordHookUrl.Text);
-
-            Settings.AdbHost =  tbAdbHost.Text;
-            Settings.AdbPort =  tbAdbPort.Text;
-            Settings.CollectAchievements =  cbCollectAchievements.Checked;
-            Settings.CollectWeeklies =  cbCollectWeeklies.Checked;
-            Settings.StopAtWave6 =  cbWave6.Checked;
-            Settings.MapPoint =  _selectedMapPoint;
-            Settings.AppRestartInterval =  tbAppRestartInterval.Text;
-            //Settings.DeviceRestartInterval =  tbDeviceRestartInterval.Text;
-            Settings.SellerGems =  cbSellerGems.Checked;
-            Settings.SellerOrbs =  cbSellerOrbs.Checked;
-            Settings.SellerOther =  cbSellerOther.Checked;
-            Settings.MonitorAttack =  cbMonitorAttack.Checked;
-            Settings.MonitorCoins =  cbMonitorCoins.Checked;
-            Settings.MonitorGems =  cbMonitorGems.Checked;
-            Settings.MonitorOrbs =  cbMonitorOrbs.Checked;
-            Settings.MonitorOther =  cbMonitorOther.Checked;
-            Settings.WebhookUrl =  tbDiscordHookUrl.Text;
-            Settings.SleepySummonerMode = cbSleepy.Checked;
-            Settings.CollectOfflineGold = cbOfflineGold.Checked;
-            Settings.Save();
+            SaveSettings();
 
             if (_initialized)
                 return;
@@ -121,6 +100,31 @@ namespace ScratchPad {
                 DiscordLogger.Log(DiscordLogger.MessageType.Error, msg);
                 MessageBox.Show(msg);
             }
+        }
+
+        private void SaveSettings() {
+            DiscordLogger.SetUrl(tbDiscordHookUrl.Text);
+
+            Settings.AdbHost =  tbAdbHost.Text;
+            Settings.AdbPort =  tbAdbPort.Text;
+            Settings.CollectAchievements =  cbCollectAchievements.Checked;
+            Settings.CollectWeeklies =  cbCollectWeeklies.Checked;
+            Settings.StopAtWave6 =  cbWave6.Checked;
+            Settings.MapPoint =  _selectedMapPoint;
+            Settings.AppRestartInterval =  tbAppRestartInterval.Text;
+            //Settings.DeviceRestartInterval =  tbDeviceRestartInterval.Text;
+            Settings.SellerGems =  cbSellerGems.Checked;
+            Settings.SellerOrbs =  cbSellerOrbs.Checked;
+            Settings.SellerOther =  cbSellerOther.Checked;
+            Settings.MonitorAttack =  cbMonitorAttack.Checked;
+            Settings.MonitorCoins =  cbMonitorCoins.Checked;
+            Settings.MonitorGems =  cbMonitorGems.Checked;
+            Settings.MonitorOrbs =  cbMonitorOrbs.Checked;
+            Settings.MonitorOther =  cbMonitorOther.Checked;
+            Settings.WebhookUrl =  tbDiscordHookUrl.Text;
+            Settings.SleepySummonerMode = cbSleepy.Checked;
+            Settings.CollectOfflineGold = cbOfflineGold.Checked;
+            Settings.Save();
         }
 
         private async void RunBot(Image obj) {
@@ -430,34 +434,43 @@ namespace ScratchPad {
 
                 cmenu.Items.Add("The King                 Normal").Click += (o, args) => {
                     _selectedMapPoint = new Point(171, 606);
+                    SaveSettings();
                 };
                 cmenu.Items.Add("The King                 Hard").Click += (o, args) => {
                     _selectedMapPoint = new Point(451, 606);
+                    SaveSettings();
                 };
                 cmenu.Items.Add("The King                 Nightmare").Click += (o, args) => {
                     _selectedMapPoint = new Point(732, 606);
+                    SaveSettings();
                 };
                 cmenu.Items.Add("-------------");
 
                 cmenu.Items.Add("Ragefist Chieftain       Normal").Click += (o, args) => {
                     _selectedMapPoint = new Point(171, 955);
+                    SaveSettings();
                 };
                 cmenu.Items.Add("Ragefist Chieftain       Hard").Click += (o, args) => {
                     _selectedMapPoint = new Point(451, 955);
+                    SaveSettings();
                 };
                 cmenu.Items.Add("Ragefist Chieftain       Nightmare").Click += (o, args) => {
                     _selectedMapPoint = new Point(732, 955);
+                    SaveSettings();
                 };
                 cmenu.Items.Add("-------------");
 
                 cmenu.Items.Add("The Joint Revenge        Normal").Click += (o, args) => {
                     _selectedMapPoint = new Point(171, 1266);
+                    SaveSettings();
                 };
                 cmenu.Items.Add("The Joint Revenge        Hard").Click += (o, args) => {
                     _selectedMapPoint = new Point(451, 1266);
+                    SaveSettings();
                 };
                 cmenu.Items.Add("The Joint Revenge        Nightmare").Click += (o, args) => {
                     _selectedMapPoint = new Point(732, 1266);
+                    SaveSettings();
                 };
 
 
@@ -465,6 +478,16 @@ namespace ScratchPad {
             }
             
             _contextMenu.Show(btnSet, 0, 0);
+        }
+
+        private void TextBox_Leave(object sender, EventArgs e)
+        {
+            SaveSettings();
+        }
+
+        private void CheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            SaveSettings();
         }
     }
 }

@@ -92,6 +92,7 @@ namespace ScratchPad
             this.tbAdbPort.Size = new System.Drawing.Size(49, 27);
             this.tbAdbPort.TabIndex = 2;
             this.tbAdbPort.Text = "56114";
+            this.tbAdbPort.Leave += new System.EventHandler(this.TextBox_Leave);
             // 
             // label1
             // 
@@ -110,6 +111,7 @@ namespace ScratchPad
             this.tbAdbHost.Size = new System.Drawing.Size(187, 27);
             this.tbAdbHost.TabIndex = 0;
             this.tbAdbHost.Text = "127.0.0.1";
+            this.tbAdbHost.Leave += new System.EventHandler(this.TextBox_Leave);
             // 
             // btnStart
             // 
@@ -179,6 +181,7 @@ namespace ScratchPad
             this.cbOfflineGold.TabIndex = 12;
             this.cbOfflineGold.Text = "Collect Offline Gold";
             this.cbOfflineGold.UseVisualStyleBackColor = true;
+            this.cbOfflineGold.CheckedChanged += new System.EventHandler(this.CheckBox_CheckedChanged);
             // 
             // cbSleepy
             // 
@@ -191,6 +194,7 @@ namespace ScratchPad
             this.cbSleepy.TabIndex = 11;
             this.cbSleepy.Text = "Sleepy Summoner Mode";
             this.cbSleepy.UseVisualStyleBackColor = true;
+            this.cbSleepy.CheckedChanged += new System.EventHandler(this.CheckBox_CheckedChanged);
             // 
             // btnSet
             // 
@@ -213,6 +217,7 @@ namespace ScratchPad
             this.cbWave6.TabIndex = 8;
             this.cbWave6.Text = "Stop at Wave 6";
             this.cbWave6.UseVisualStyleBackColor = true;
+            this.cbWave6.CheckedChanged += new System.EventHandler(this.CheckBox_CheckedChanged);
             // 
             // tbAppRestartInterval
             // 
@@ -222,6 +227,7 @@ namespace ScratchPad
             this.tbAppRestartInterval.Size = new System.Drawing.Size(73, 27);
             this.tbAppRestartInterval.TabIndex = 5;
             this.tbAppRestartInterval.Text = "-1";
+            this.tbAppRestartInterval.Leave += new System.EventHandler(this.TextBox_Leave);
             // 
             // label2
             // 
@@ -242,6 +248,7 @@ namespace ScratchPad
             this.cbCollectWeeklies.TabIndex = 3;
             this.cbCollectWeeklies.Text = "Collect Weeklies";
             this.cbCollectWeeklies.UseVisualStyleBackColor = true;
+            this.cbCollectWeeklies.CheckedChanged += new System.EventHandler(this.CheckBox_CheckedChanged);
             // 
             // cbCollectAchievements
             // 
@@ -253,6 +260,7 @@ namespace ScratchPad
             this.cbCollectAchievements.TabIndex = 0;
             this.cbCollectAchievements.Text = "Collect Achievements";
             this.cbCollectAchievements.UseVisualStyleBackColor = true;
+            this.cbCollectAchievements.CheckedChanged += new System.EventHandler(this.CheckBox_CheckedChanged);
             // 
             // groupBox2
             // 
@@ -279,6 +287,7 @@ namespace ScratchPad
             this.cbSellerOther.TabIndex = 2;
             this.cbSellerOther.Text = "Other (Summoning Stones, ?)";
             this.cbSellerOther.UseVisualStyleBackColor = true;
+            this.cbSellerOther.CheckedChanged += new System.EventHandler(this.CheckBox_CheckedChanged);
             // 
             // cbSellerOrbs
             // 
@@ -291,6 +300,7 @@ namespace ScratchPad
             this.cbSellerOrbs.TabIndex = 1;
             this.cbSellerOrbs.Text = "Orbs";
             this.cbSellerOrbs.UseVisualStyleBackColor = true;
+            this.cbSellerOrbs.CheckedChanged += new System.EventHandler(this.CheckBox_CheckedChanged);
             // 
             // cbSellerGems
             // 
@@ -303,6 +313,7 @@ namespace ScratchPad
             this.cbSellerGems.TabIndex = 0;
             this.cbSellerGems.Text = "Gems";
             this.cbSellerGems.UseVisualStyleBackColor = true;
+            this.cbSellerGems.CheckedChanged += new System.EventHandler(this.CheckBox_CheckedChanged);
             // 
             // groupBox3
             // 
@@ -330,6 +341,7 @@ namespace ScratchPad
             this.cbMonitorOther.TabIndex = 3;
             this.cbMonitorOther.Text = "Other (Summoning Stones, ?)";
             this.cbMonitorOther.UseVisualStyleBackColor = true;
+            this.cbMonitorOther.CheckedChanged += new System.EventHandler(this.CheckBox_CheckedChanged);
             // 
             // cbMonitorGems
             // 
@@ -341,6 +353,7 @@ namespace ScratchPad
             this.cbMonitorGems.TabIndex = 4;
             this.cbMonitorGems.Text = "Gems";
             this.cbMonitorGems.UseVisualStyleBackColor = true;
+            this.cbMonitorGems.CheckedChanged += new System.EventHandler(this.CheckBox_CheckedChanged);
             // 
             // cbMonitorOrbs
             // 
@@ -352,6 +365,7 @@ namespace ScratchPad
             this.cbMonitorOrbs.TabIndex = 3;
             this.cbMonitorOrbs.Text = "Orbs";
             this.cbMonitorOrbs.UseVisualStyleBackColor = true;
+            this.cbMonitorOrbs.CheckedChanged += new System.EventHandler(this.CheckBox_CheckedChanged);
             // 
             // cbMonitorCoins
             // 
@@ -363,6 +377,7 @@ namespace ScratchPad
             this.cbMonitorCoins.TabIndex = 1;
             this.cbMonitorCoins.Text = "Coins";
             this.cbMonitorCoins.UseVisualStyleBackColor = true;
+            this.cbMonitorCoins.CheckedChanged += new System.EventHandler(this.CheckBox_CheckedChanged);
             // 
             // cbMonitorAttack
             // 
@@ -374,6 +389,7 @@ namespace ScratchPad
             this.cbMonitorAttack.TabIndex = 0;
             this.cbMonitorAttack.Text = "Attack";
             this.cbMonitorAttack.UseVisualStyleBackColor = true;
+            this.cbMonitorAttack.CheckedChanged += new System.EventHandler(this.CheckBox_CheckedChanged);
             // 
             // groupBox9
             // 
@@ -395,6 +411,7 @@ namespace ScratchPad
             this.tbDiscordHookUrl.Name = "tbDiscordHookUrl";
             this.tbDiscordHookUrl.Size = new System.Drawing.Size(282, 27);
             this.tbDiscordHookUrl.TabIndex = 1;
+            this.tbDiscordHookUrl.Leave += new System.EventHandler(this.TextBox_Leave);
             // 
             // label11
             // 
