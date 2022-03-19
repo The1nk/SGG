@@ -15,6 +15,7 @@ namespace SGG.Models
         
         public enum TemplateType {
             SpeedMult1x,
+            SpeedMult2x,
             Ad_Attack,
             Ad_Coins,
             Ad_Gems,
@@ -30,12 +31,14 @@ namespace SGG.Models
             Wave6,
             WinScreen,
             MapSelect,
-            OfflineGold
+            OfflineGold,
+            SmilingSummoner
         }
 
         static ImageTemplates() {
             var lst = new List<ImageTemplate>();
             lst.Add(ImageTemplate.FromBitmap(TemplateType.SpeedMult1x, "1X Speed Multiplier.bmp"));
+            lst.Add(ImageTemplate.FromBitmap(TemplateType.SpeedMult2x, "2X Speed Multiplier.bmp"));
             lst.Add(ImageTemplate.FromBitmap(TemplateType.Ad_Attack, "Ad_Attack.bmp"));
             lst.Add(ImageTemplate.FromBitmap(TemplateType.Ad_Coins, "Ad_Coins.bmp"));
             lst.Add(ImageTemplate.FromBitmap(TemplateType.Ad_Gems, "Ad_Gems.bmp"));
@@ -52,6 +55,7 @@ namespace SGG.Models
             lst.Add(ImageTemplate.FromBitmap(TemplateType.WinScreen, "Win Screen.bmp"));
             lst.Add(ImageTemplate.FromBitmap(TemplateType.MapSelect, "Map Select.bmp"));
             lst.Add(ImageTemplate.FromBitmap(TemplateType.OfflineGold, "Offline Gold.bmp"));
+            lst.Add(ImageTemplate.FromBitmap(TemplateType.SmilingSummoner, "Smiling Summoner.bmp"));
 
             _templates = lst;
         }

@@ -144,8 +144,13 @@ namespace ScratchPad {
                 if (await CheckForMotd(bmp)) return;
                 if (await CheckForOffer(bmp)) return;
 
-                if (cbSleepy.Checked && DateTime.Now < _waitUntilNowForSleepySummoner)
-                    return;
+                if (cbSleepy.Checked) {
+                    if (DateTime.Now < _waitUntilNowForSleepySummoner)
+                        return;
+
+                    if (await CheckForSmiles(bmp))
+                        return;
+                }
                 
                 if (await CheckForOfflineGold(bmp)) return;
                 if (await CheckForWave6Reset(bmp)) return;
@@ -312,7 +317,7 @@ namespace ScratchPad {
             DiscordLogger.Log(DiscordLogger.MessageType.Debug, "Dismissing sale popup");
             ClickAt(835, 277);
             _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
-            _waitUntilNowForSleepySummoner = DateTime.Now.AddSeconds(40);
+            WaitForSleeping();
             return true;
         }
 
@@ -320,10 +325,37 @@ namespace ScratchPad {
             if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.SpeedMult1x).IsPresentOn(image)) return false;
 
             // Toggle it
-            DiscordLogger.Log(DiscordLogger.MessageType.Debug, "Enabling 2x speed");
+            DiscordLogger.Log(DiscordLogger.MessageType.Info, "Enabling 2x speed");
+            ToggleSpeed();
+            return true;
+        }
+
+        private async Task<bool> CheckForSpeedMultiplier2x(Image image) {
+            if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.SpeedMult2x).IsPresentOn(image)) {
+                DiscordLogger.Log(DiscordLogger.MessageType.Info, "Couldn't find 2x..");
+                return false;
+            }
+
+            // Toggle it
+            DiscordLogger.Log(DiscordLogger.MessageType.Info, "Disabling 2x speed");
+            ToggleSpeed();
+            return true;
+        }
+
+        private async Task<bool> CheckForSmiles(Image image) {
+            if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.SmilingSummoner).IsPresentOn(image)) return false;
+
+            // Toggle it
+            DiscordLogger.Log(DiscordLogger.MessageType.Info, "Summoner is smiling! Singing lullabies..");
+            if (!await CheckForSpeedMultiplier2x(image)) return false;
+
+            WaitForSleeping();
+            return true;
+        }
+
+        private void ToggleSpeed() {
             ClickAt(69, 1394);
             _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
-            return true;
         }
 
         private async Task<bool> CheckForMotd(Image image) {
@@ -333,8 +365,12 @@ namespace ScratchPad {
             DiscordLogger.Log(DiscordLogger.MessageType.Debug, "Dismissing MOTD");
             ClickAt(844, 307);
             _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
-            _waitUntilNowForSleepySummoner = DateTime.Now.AddSeconds(40);
+            WaitForSleeping();
             return true;
+        }
+
+        private void WaitForSleeping() {
+            _waitUntilNowForSleepySummoner = DateTime.Now.AddSeconds(40);
         }
 
         private void ClickAt(int x, int y) {
@@ -369,11 +405,14 @@ namespace ScratchPad {
                 MessageBox.Show(dbg);
             } else if (mee.Button == MouseButtons.Right) {
                 var counter = 1;
-                while (_lastCaptures.TryDequeue(out var img)) {
-                    var path = ("C:\\SSG Screens");
-                    if (!System.IO.Directory.Exists(path))
-                        System.IO.Directory.CreateDirectory(path);
+                var path = ("C:\\SSG Screens");
+                if (System.IO.Directory.Exists(path))
+                    System.IO.Directory.Delete(path, true);
 
+                if (!System.IO.Directory.Exists(path))
+                    System.IO.Directory.CreateDirectory(path);
+
+                while (_lastCaptures.TryDequeue(out var img)) {
                     img.Save(System.IO.Path.Combine(path, $"img{counter:0000}.bmp"));
                     counter++;
                 }
