@@ -323,7 +323,6 @@ namespace ScratchPad {
             DiscordLogger.Log(DiscordLogger.MessageType.Debug, "Dismissing sale popup");
             ClickAt(835, 277);
             _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
-            WaitForSleeping();
             return true;
         }
 
@@ -371,7 +370,6 @@ namespace ScratchPad {
             DiscordLogger.Log(DiscordLogger.MessageType.Debug, "Dismissing MOTD");
             ClickAt(844, 307);
             _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
-            WaitForSleeping();
             return true;
         }
 
