@@ -27,6 +27,7 @@ namespace ScratchPad {
         private bool _running;
         private int _currentRun = 0;
         private int _currentRunAbs = 0;
+        private bool _disableAutoSave = false;
 
         private ContextMenuStrip _contextMenu;
 
@@ -38,7 +39,8 @@ namespace ScratchPad {
             _lastCaptures = new Queue<Image>();
             
             Settings.Load();
-            
+
+            _disableAutoSave = true;
             tbAdbHost.Text = Settings.AdbHost;
             tbAdbPort.Text = Settings.AdbPort;
             cbCollectAchievements.Checked = Settings.CollectAchievements;
@@ -56,6 +58,7 @@ namespace ScratchPad {
             cbMonitorOrbs.Checked = Settings.MonitorOrbs;
             cbMonitorOther.Checked = Settings.MonitorOther;
             tbDiscordHookUrl.Text = Settings.WebhookUrl;
+            _disableAutoSave = false;
         }
 
         private void UpdateImage(Image obj) {
@@ -482,12 +485,14 @@ namespace ScratchPad {
 
         private void TextBox_Leave(object sender, EventArgs e)
         {
-            SaveSettings();
+            if (!_disableAutoSave)
+                SaveSettings();
         }
 
         private void CheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            SaveSettings();
+            if (!_disableAutoSave)
+                SaveSettings();
         }
     }
 }
