@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -86,7 +87,7 @@ namespace SGG.Models
             
             Debug.WriteLine($"Starting {fileName}");
 
-            using var bmp = new Bitmap($"Templates\\{fileName}");
+            using var bmp = new Bitmap(Path.Combine(AppContext.BaseDirectory, $"Templates\\{fileName}"));
             
             var ret = new ImageTemplate {
                 Type = type,

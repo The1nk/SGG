@@ -7,6 +7,8 @@ using System.Text;
 namespace SGG.Utils
 {
     public static class Settings {
+        private static readonly string _settingsFile;
+
         public static string AdbHost = "localhost";
         public static string AdbPort = "1234";
         public static bool CollectAchievements = false;
@@ -31,7 +33,9 @@ namespace SGG.Utils
 
         public static string WebhookUrl = "";
         
-
+        static Settings() {
+            _settingsFile = Path.Combine(AppContext.BaseDirectory, "settings.txt");
+        }
         public static void Save() {
             var sb = new StringBuilder();
             sb.AppendLine(AdbHost);
@@ -59,16 +63,16 @@ namespace SGG.Utils
             sb.AppendLine(SleepySummonerMode.ToString());
             sb.AppendLine(CollectOfflineGold.ToString());
 
-            if (File.Exists("settings.txt"))
-                File.Delete("settings.txt");
-            File.WriteAllText("settings.txt", sb.ToString());
+            if (File.Exists(_settingsFile))
+                File.Delete(_settingsFile);
+            File.WriteAllText(_settingsFile, sb.ToString());
         }
 
         public static void Load() {
-            if (!File.Exists("settings.txt"))
+            if (!File.Exists(_settingsFile))
                 return;
 
-            var lines = File.ReadAllLines("settings.txt");
+            var lines = File.ReadAllLines(_settingsFile);
 
             try {
                 AdbHost = lines[0];
