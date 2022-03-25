@@ -41,23 +41,23 @@ namespace ScratchPad {
             Settings.Load();
 
             _disableAutoSave = true;
-            tbAdbHost.Text = Settings.AdbHost;
-            tbAdbPort.Text = Settings.AdbPort;
-            cbCollectAchievements.Checked = Settings.CollectAchievements;
-            cbCollectWeeklies.Checked = Settings.CollectWeeklies;
-            cbWave6.Checked = Settings.StopAtWave6;
-            _selectedMapPoint = Settings.MapPoint;
-            tbAppRestartInterval.Text = Settings.AppRestartInterval;
-            //tbDeviceRestartInterval.Text = Settings.DeviceRestartInterval;
-            cbSellerGems.Checked = Settings.SellerGems;
-            cbSellerOrbs.Checked = Settings.SellerOrbs;
-            cbSellerOther.Checked = Settings.SellerOther;
-            cbMonitorAttack.Checked = Settings.MonitorAttack;
-            cbMonitorCoins.Checked = Settings.MonitorCoins;
-            cbMonitorGems.Checked = Settings.MonitorGems;
-            cbMonitorOrbs.Checked = Settings.MonitorOrbs;
-            cbMonitorOther.Checked = Settings.MonitorOther;
-            tbDiscordHookUrl.Text = Settings.WebhookUrl;
+            tbAdbHost.Text = Settings.Instance.AdbHost;
+            tbAdbPort.Text = Settings.Instance.AdbPort;
+            cbCollectAchievements.Checked = Settings.Instance.CollectAchievements;
+            cbCollectWeeklies.Checked = Settings.Instance.CollectWeeklies;
+            cbWave6.Checked = Settings.Instance.StopAtWave6;
+            _selectedMapPoint = Settings.Instance.MapPoint;
+            tbAppRestartInterval.Text = Settings.Instance.AppRestartInterval;
+            //tbDeviceRestartInterval.Text = Settings.Instance.DeviceRestartInterval;
+            cbSellerGems.Checked = Settings.Instance.SellerGems;
+            cbSellerOrbs.Checked = Settings.Instance.SellerOrbs;
+            cbSellerOther.Checked = Settings.Instance.SellerOther;
+            cbMonitorAttack.Checked = Settings.Instance.MonitorAttack;
+            cbMonitorCoins.Checked = Settings.Instance.MonitorCoins;
+            cbMonitorGems.Checked = Settings.Instance.MonitorGems;
+            cbMonitorOrbs.Checked = Settings.Instance.MonitorOrbs;
+            cbMonitorOther.Checked = Settings.Instance.MonitorOther;
+            tbDiscordHookUrl.Text = Settings.Instance.WebhookUrl;
             _disableAutoSave = false;
         }
 
@@ -108,25 +108,25 @@ namespace ScratchPad {
         private void SaveSettings() {
             DiscordLogger.SetUrl(tbDiscordHookUrl.Text);
 
-            Settings.AdbHost =  tbAdbHost.Text;
-            Settings.AdbPort =  tbAdbPort.Text;
-            Settings.CollectAchievements =  cbCollectAchievements.Checked;
-            Settings.CollectWeeklies =  cbCollectWeeklies.Checked;
-            Settings.StopAtWave6 =  cbWave6.Checked;
-            Settings.MapPoint =  _selectedMapPoint;
-            Settings.AppRestartInterval =  tbAppRestartInterval.Text;
-            //Settings.DeviceRestartInterval =  tbDeviceRestartInterval.Text;
-            Settings.SellerGems =  cbSellerGems.Checked;
-            Settings.SellerOrbs =  cbSellerOrbs.Checked;
-            Settings.SellerOther =  cbSellerOther.Checked;
-            Settings.MonitorAttack =  cbMonitorAttack.Checked;
-            Settings.MonitorCoins =  cbMonitorCoins.Checked;
-            Settings.MonitorGems =  cbMonitorGems.Checked;
-            Settings.MonitorOrbs =  cbMonitorOrbs.Checked;
-            Settings.MonitorOther =  cbMonitorOther.Checked;
-            Settings.WebhookUrl =  tbDiscordHookUrl.Text;
-            Settings.SleepySummonerMode = cbSleepy.Checked;
-            Settings.CollectOfflineGold = cbOfflineGold.Checked;
+            Settings.Instance.AdbHost =  tbAdbHost.Text;
+            Settings.Instance.AdbPort =  tbAdbPort.Text;
+            Settings.Instance.CollectAchievements =  cbCollectAchievements.Checked;
+            Settings.Instance.CollectWeeklies =  cbCollectWeeklies.Checked;
+            Settings.Instance.StopAtWave6 =  cbWave6.Checked;
+            Settings.Instance.MapPoint =  _selectedMapPoint;
+            Settings.Instance.AppRestartInterval =  tbAppRestartInterval.Text;
+            //Settings.Instance.DeviceRestartInterval =  tbDeviceRestartInterval.Text;
+            Settings.Instance.SellerGems =  cbSellerGems.Checked;
+            Settings.Instance.SellerOrbs =  cbSellerOrbs.Checked;
+            Settings.Instance.SellerOther =  cbSellerOther.Checked;
+            Settings.Instance.MonitorAttack =  cbMonitorAttack.Checked;
+            Settings.Instance.MonitorCoins =  cbMonitorCoins.Checked;
+            Settings.Instance.MonitorGems =  cbMonitorGems.Checked;
+            Settings.Instance.MonitorOrbs =  cbMonitorOrbs.Checked;
+            Settings.Instance.MonitorOther =  cbMonitorOther.Checked;
+            Settings.Instance.WebhookUrl =  tbDiscordHookUrl.Text;
+            Settings.Instance.SleepySummonerMode = cbSleepy.Checked;
+            Settings.Instance.CollectOfflineGold = cbOfflineGold.Checked;
             Settings.Save();
         }
 
