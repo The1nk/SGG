@@ -13,6 +13,8 @@ namespace SGG.Utils
         public string AdbHost = "localhost";
         public string AdbPort = "1234";
         public bool ShowImages = true;
+        public int FramesPerSecondToSave = 5;
+        public int SecondsToSave = 30;
 
         public Point MapPoint = new Point(179, 612);
         public bool CollectAchievements = false;
@@ -62,6 +64,8 @@ namespace SGG.Utils
         }
 
         public static void Load() {
+            var tmp = new SettingsInstance();
+
             if (!File.Exists(_settingsFile))
                 return;
 
@@ -74,11 +78,19 @@ namespace SGG.Utils
                 // ignore
             }
 
+            Instance ??= new SettingsInstance();
+
             Instance.MonitorAttack = false;
             Instance.MonitorCoins = false;
             Instance.MonitorGems = false;
             Instance.MonitorOther = false;
             Instance.MonitorOrbs = false;
+
+            if (Instance.FramesPerSecondToSave == 0)
+                Instance.FramesPerSecondToSave = tmp.FramesPerSecondToSave;
+
+            if (Instance.SecondsToSave == 0)
+                Instance.SecondsToSave = tmp.SecondsToSave;
         }
     }
 }

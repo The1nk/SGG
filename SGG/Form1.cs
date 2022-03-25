@@ -20,7 +20,7 @@ namespace ScratchPad {
         private bool _initialized;
         private AdbClient _client;
         private DeviceData _device;
-        private readonly Queue<Image> _lastCaptures;
+        private readonly List<Tuple<DateTime, Image>> _lastCaptures;
         private ScreenCaptureWorker _screenCaptureWorker;
         private DateTime _nextActionAvailableAt;
         private DateTime _lastAction;
@@ -38,7 +38,7 @@ namespace ScratchPad {
 
         public Form1() {
             InitializeComponent();
-            _lastCaptures = new Queue<Image>();
+            _lastCaptures = new List<Tuple<DateTime, Image>>();
             
             Settings.Load();
 
@@ -73,7 +73,7 @@ namespace ScratchPad {
             _disableAutoSave = false;
         }
 
-        private void UpdateImage(Image obj) {
+        private async void UpdateImage(Image obj) {
             Image clone;
             lock (obj) {
                 clone = (Image) obj.Clone();
@@ -82,9 +82,19 @@ namespace ScratchPad {
             if (Settings.Instance.ShowImages)
                 pictureBox1.Image = clone;
 
-            _lastCaptures.Enqueue(clone);
-            while (_lastCaptures.Count > 100)
-                _lastCaptures.Dequeue();
+            await AddToImageQueue(DateTime.Now, clone);
+        }
+
+        private async Task AddToImageQueue(DateTime timestamp, Image image) {
+            lock (_lastCaptures) {
+                var msPerShot = 1000 / Settings.Instance.FramesPerSecondToSave;
+                if (_lastCaptures.Any(c => c.Item1.AddMilliseconds(msPerShot) >= timestamp))
+                    return;
+
+                _lastCaptures.Add(new Tuple<DateTime, Image>(timestamp, image));
+
+                _lastCaptures.RemoveAll(c => c.Item1 <= timestamp.AddSeconds(-1 * Settings.Instance.SecondsToSave));
+            }
         }
 
         private void Init() {
@@ -476,9 +486,13 @@ namespace ScratchPad {
                 if (!System.IO.Directory.Exists(path))
                     System.IO.Directory.CreateDirectory(path);
 
-                while (_lastCaptures.TryDequeue(out var img)) {
-                    img.Save(System.IO.Path.Combine(path, $"img{counter:0000}.bmp"));
-                    counter++;
+                lock (_lastCaptures) {
+                    foreach (var cap in _lastCaptures.OrderBy(p => p.Item1)) {
+                        cap.Item2.Save(System.IO.Path.Combine(path, $"{cap.Item1:yyyy.MM.dd.HH.mm.ss.ffff}.bmp"));
+                        counter++;
+                    }
+
+                    _lastCaptures.Clear();
                 }
             }
         }
