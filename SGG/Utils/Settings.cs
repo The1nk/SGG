@@ -18,9 +18,11 @@ namespace SGG.Utils
         public Point MapPoint = new Point(179, 612);
         public string AppRestartInterval = "-1";
         public string DeviceRestartInterval = "-1";
+        public string ResetAfterXMinutesOfNoActivity = "10";
 
         public bool SleepySummonerMode = true;
         public bool CollectOfflineGold = false;
+        public bool ShowImages = true;
         
         public bool SellerGems = false;
         public bool SellerOrbs = true;
@@ -67,8 +69,17 @@ namespace SGG.Utils
                 Instance = JsonConvert.DeserializeObject<SettingsInstance>(text);
             }
             catch {
+                Instance = new SettingsInstance();
                 // ignore
             }
+
+            Instance.MonitorAttack = false;
+            Instance.MonitorCoins = false;
+            Instance.MonitorGems = false;
+            Instance.MonitorOther = false;
+            Instance.MonitorOrbs = false;
+
+
         }
     }
 }

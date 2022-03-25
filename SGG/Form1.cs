@@ -23,6 +23,7 @@ namespace ScratchPad {
         private readonly Queue<Image> _lastCaptures;
         private ScreenCaptureWorker _screenCaptureWorker;
         private DateTime _nextActionAvailableAt;
+        private DateTime _lastAction;
         private readonly object _lockObject = new object();
         private bool _running;
         private int _currentRun = 0;
@@ -33,6 +34,7 @@ namespace ScratchPad {
 
         private Point _selectedMapPoint = new Point(179, 612);
         private DateTime _waitUntilNowForSleepySummoner = DateTime.MinValue;
+        private int _restarts = 0;
 
         public Form1() {
             InitializeComponent();
@@ -48,7 +50,7 @@ namespace ScratchPad {
             cbWave6.Checked = Settings.Instance.StopAtWave6;
             _selectedMapPoint = Settings.Instance.MapPoint;
             tbAppRestartInterval.Text = Settings.Instance.AppRestartInterval;
-            //tbDeviceRestartInterval.Text = Settings.Instance.DeviceRestartInterval;
+            tbDeviceRestartInterval.Text = Settings.Instance.DeviceRestartInterval;
             cbSellerGems.Checked = Settings.Instance.SellerGems;
             cbSellerOrbs.Checked = Settings.Instance.SellerOrbs;
             cbSellerOther.Checked = Settings.Instance.SellerOther;
@@ -58,6 +60,10 @@ namespace ScratchPad {
             cbMonitorOrbs.Checked = Settings.Instance.MonitorOrbs;
             cbMonitorOther.Checked = Settings.Instance.MonitorOther;
             tbDiscordHookUrl.Text = Settings.Instance.WebhookUrl;
+            cbSleepy.Checked = Settings.Instance.SleepySummonerMode;
+            cbOfflineGold.Checked = Settings.Instance.CollectOfflineGold;
+            tbResetAfterMinutesWithoutActivity.Text = Settings.Instance.ResetAfterXMinutesOfNoActivity;
+            cbShowImages.Checked = Settings.Instance.ShowImages;
             _disableAutoSave = false;
         }
 
@@ -67,7 +73,9 @@ namespace ScratchPad {
                 clone = (Image) obj.Clone();
             }
 
-            pictureBox1.Image = clone;
+            if (Settings.Instance.ShowImages)
+                pictureBox1.Image = clone;
+
             _lastCaptures.Enqueue(clone);
             while (_lastCaptures.Count > 100)
                 _lastCaptures.Dequeue();
@@ -115,7 +123,7 @@ namespace ScratchPad {
             Settings.Instance.StopAtWave6 =  cbWave6.Checked;
             Settings.Instance.MapPoint =  _selectedMapPoint;
             Settings.Instance.AppRestartInterval =  tbAppRestartInterval.Text;
-            //Settings.Instance.DeviceRestartInterval =  tbDeviceRestartInterval.Text;
+            Settings.Instance.DeviceRestartInterval =  tbDeviceRestartInterval.Text;
             Settings.Instance.SellerGems =  cbSellerGems.Checked;
             Settings.Instance.SellerOrbs =  cbSellerOrbs.Checked;
             Settings.Instance.SellerOther =  cbSellerOther.Checked;
@@ -127,7 +135,15 @@ namespace ScratchPad {
             Settings.Instance.WebhookUrl =  tbDiscordHookUrl.Text;
             Settings.Instance.SleepySummonerMode = cbSleepy.Checked;
             Settings.Instance.CollectOfflineGold = cbOfflineGold.Checked;
+            Settings.Instance.ResetAfterXMinutesOfNoActivity = tbResetAfterMinutesWithoutActivity.Text;
+            Settings.Instance.ShowImages = cbShowImages.Checked;
+
             Settings.Save();
+        }
+
+        private void RecordLastActionAndSetDelay(int millisecondsDelay = 0) {
+            _nextActionAvailableAt = DateTime.Now.AddMilliseconds(millisecondsDelay);
+            _lastAction = DateTime.Now;
         }
 
         private async void RunBot(Image obj) {
@@ -148,25 +164,26 @@ namespace ScratchPad {
 
                 }
 
+                if (await CheckForStuckApp()) return;
                 if (await CheckForMotd(bmp)) return;
                 if (await CheckForOffer(bmp)) return;
 
-                if (cbSleepy.Checked) {
+                if (Settings.Instance.SleepySummonerMode) {
                     if (DateTime.Now < _waitUntilNowForSleepySummoner)
                         return;
                 }
 
-                if (await CheckForAd(ImageTemplates.TemplateType.Ad_Attack, bmp, cbMonitorAttack)) return;
-                if (await CheckForAd(ImageTemplates.TemplateType.Ad_Coins, bmp, cbMonitorCoins)) return;
-                if (await CheckForAd(ImageTemplates.TemplateType.Ad_Gems, bmp, cbMonitorGems)) return;
-                if (await CheckForAd(ImageTemplates.TemplateType.Ad_Orbs, bmp, cbMonitorOrbs)) return;
-                if (await CheckForAd(ImageTemplates.TemplateType.Ad_Stones, bmp, cbMonitorOther)) return;
+                if (await CheckForAd(ImageTemplates.TemplateType.Ad_Attack, bmp, Settings.Instance.MonitorAttack)) return;
+                if (await CheckForAd(ImageTemplates.TemplateType.Ad_Coins, bmp, Settings.Instance.MonitorCoins)) return;
+                if (await CheckForAd(ImageTemplates.TemplateType.Ad_Gems, bmp, Settings.Instance.MonitorGems)) return;
+                if (await CheckForAd(ImageTemplates.TemplateType.Ad_Orbs, bmp, Settings.Instance.MonitorOrbs)) return;
+                if (await CheckForAd(ImageTemplates.TemplateType.Ad_Stones, bmp, Settings.Instance.MonitorOther)) return;
 
-                if (await CheckForSale(ImageTemplates.TemplateType.Seller_Gems, bmp, cbSellerGems)) return;
-                if (await CheckForSale(ImageTemplates.TemplateType.Seller_Orbs, bmp, cbSellerOrbs)) return;
-                if (await CheckForSale(ImageTemplates.TemplateType.Seller_Stones, bmp, cbSellerOther)) return;
+                if (await CheckForSale(ImageTemplates.TemplateType.Seller_Gems, bmp, Settings.Instance.SellerGems)) return;
+                if (await CheckForSale(ImageTemplates.TemplateType.Seller_Orbs, bmp, Settings.Instance.SellerOrbs)) return;
+                if (await CheckForSale(ImageTemplates.TemplateType.Seller_Stones, bmp, Settings.Instance.SellerOther)) return;
 
-                if (cbSleepy.Checked && await CheckForSmiles(bmp))
+                if (Settings.Instance.SleepySummonerMode && await CheckForSmiles(bmp))
                     return;
                 
                 if (await CheckForOfflineGold(bmp)) return;
@@ -188,22 +205,34 @@ namespace ScratchPad {
             }
         }
 
+        private async Task<bool> CheckForStuckApp() {
+            if (Settings.Instance.ResetAfterXMinutesOfNoActivity == "-1") return false;
+
+            if (_lastAction.AddMinutes(Double.Parse(Settings.Instance.ResetAfterXMinutesOfNoActivity)) >
+                DateTime.Now) return false;
+
+            DiscordLogger.Log(DiscordLogger.MessageType.Info,
+                $"Threshold of {Settings.Instance.ResetAfterXMinutesOfNoActivity} minutes with no activity reached. Restarting app.");
+            CloseAndRestartApp();
+            RecordLastActionAndSetDelay(0);
+            return true;
+        }
+
         private async Task<bool> CheckForOfflineGold(Image image) {
-            if (!cbOfflineGold.Checked) return false;
+            if (!Settings.Instance.CollectOfflineGold) return false;
             if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.OfflineGold).IsPresentOn(image)) return false;
 
             DiscordLogger.Log(DiscordLogger.MessageType.Info, "Collecting offline gold");
             ClickAt(448, 1204, 1);
             ClickAt(250, 1084);
             ClickAt(250, 900);
-            _nextActionAvailableAt = DateTime.Now.AddSeconds(.2);
+            RecordLastActionAndSetDelay(200);
             return false;
         }
 
-        private async Task<bool> CheckForAd(ImageTemplates.TemplateType adType, Image clone, CheckBox checkbox) {
+        private async Task<bool> CheckForAd(ImageTemplates.TemplateType adType, Image clone, bool enabled) {
             var ret = ImageTemplates.GetByType(adType).IsPresentOn(clone);
-            var enabled = checkbox.Enabled && checkbox.Checked;
-
+            
             if (ret) {
                 if (enabled) {
                     DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Watching Monitor for {adType}");
@@ -214,7 +243,7 @@ namespace ScratchPad {
                 else {
                     DiscordLogger.Log(DiscordLogger.MessageType.Debug, $"Skipping Monitor for {adType}");
                     ClickAt(243, 847);
-                    _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
+                    RecordLastActionAndSetDelay(2000);
                 }
             }
 
@@ -225,21 +254,20 @@ namespace ScratchPad {
             _client.ExecuteShellCommand(_device, $"input keyevent 4;sleep {secondsDelay}", null);
         }
 
-        private async Task<bool> CheckForSale(ImageTemplates.TemplateType saleType,  Image clone, CheckBox checkbox) {
+        private async Task<bool> CheckForSale(ImageTemplates.TemplateType saleType,  Image clone, bool enabled) {
             var ret = ImageTemplates.GetByType(saleType).IsPresentOn( clone);
-            var enabled = checkbox.Enabled && checkbox.Checked;
 
             if (ret) {
                 if (enabled) {
                     DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Accepting Seller for {saleType}");
                     ClickAt(494, 915, 1, 1.5);
                     ClickAt(494, 915);
-                    _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
+                    RecordLastActionAndSetDelay(2000);
                 }
                 else {
                     DiscordLogger.Log(DiscordLogger.MessageType.Debug, $"Skipping Seller for {saleType}");
                     ClickAt(243, 847);
-                    _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
+                    RecordLastActionAndSetDelay(2000);
                 }
             }
 
@@ -252,7 +280,7 @@ namespace ScratchPad {
             // Dismiss
             DiscordLogger.Log(DiscordLogger.MessageType.Info, "Confirming layout");
             ClickAt(433, 1505);
-            _nextActionAvailableAt = DateTime.Now.AddSeconds(.5);
+            RecordLastActionAndSetDelay(500);
             return true;
         }
 
@@ -263,7 +291,7 @@ namespace ScratchPad {
             DiscordLogger.Log(DiscordLogger.MessageType.Info, "Dismissing 'Lose' screen");
             ClickAt(252, 1211, 2);
             ClickAt(283, 1059);
-            _nextActionAvailableAt = DateTime.Now.AddSeconds(1);
+            RecordLastActionAndSetDelay(1000);
             return true;
         }
 
@@ -273,12 +301,12 @@ namespace ScratchPad {
             // Dismiss
             DiscordLogger.Log(DiscordLogger.MessageType.Info, "Dismissing 'Win' screen");
             ClickAt(444, 1222);
-            _nextActionAvailableAt = DateTime.Now.AddSeconds(.5);
+            RecordLastActionAndSetDelay(5000);
             return true;
         }
 
         private async Task<bool> CheckForWave6Reset(Image image) {
-            if (!cbWave6.Checked) return false;
+            if (!Settings.Instance.StopAtWave6) return false;
 
             if (!ImageTemplates.GetByType(ImageTemplates.TemplateType.On_A_Map).IsPresentOn(image)) return false;
             if (ImageTemplates.GetByType(ImageTemplates.TemplateType.Wave1).IsPresentOn(image)) return false;
@@ -290,7 +318,7 @@ namespace ScratchPad {
             // Pop map select
             DiscordLogger.Log(DiscordLogger.MessageType.Info, "Resetting after Wave 6");
             ClickAt(790, 47);
-            _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
+            RecordLastActionAndSetDelay(2000);
             return true;
         }
 
@@ -308,19 +336,26 @@ namespace ScratchPad {
                     $"Run #{_currentRun:#,##0} of {restartInterval:#,##0}..");
 
                 if (_currentRun > restartInterval) {
-                    // Kill app
-                    DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Restarting app!");
-                    _client.ExecuteShellCommand(_device, "am force-stop com.pixio.google.mtd;sleep 5;monkey -p com.pixio.google.mtd 15;sleep 5", null);
-                    DiscordLogger.Log(DiscordLogger.MessageType.Info, $"App restarted..?");
-                    _currentRun = 0;
+                    DiscordLogger.Log(DiscordLogger.MessageType.Info,
+                        "Threshold of consecutive runs met, restarting app");
+                    CloseAndRestartApp();
                 }
             }
 
             // Dismiss
             DiscordLogger.Log(DiscordLogger.MessageType.Info, "Selecting map");
             ClickAt(_selectedMapPoint.X, _selectedMapPoint.Y);
-            _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
+            RecordLastActionAndSetDelay(2000);
             return true;
+        }
+
+        private void CloseAndRestartApp() {
+            // Kill app
+            DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Closing and re-opening app");
+            _client.ExecuteShellCommand(_device, "am force-stop com.pixio.google.mtd;sleep 5;monkey -p com.pixio.google.mtd 15;sleep 5", null);
+            DiscordLogger.Log(DiscordLogger.MessageType.Debug, $"App should be open");
+            _currentRun = 0;
+            _restarts++;
         }
 
         private async Task<bool> CheckForOffer(Image image) {
@@ -329,7 +364,7 @@ namespace ScratchPad {
             // Dismiss
             DiscordLogger.Log(DiscordLogger.MessageType.Debug, "Dismissing sale popup");
             ClickAt(835, 277);
-            _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
+            RecordLastActionAndSetDelay(2000);
             return true;
         }
 
@@ -367,7 +402,7 @@ namespace ScratchPad {
 
         private void ToggleSpeed() {
             ClickAt(69, 1394);
-            _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
+            RecordLastActionAndSetDelay(2000);
         }
 
         private async Task<bool> CheckForMotd(Image image) {
@@ -376,7 +411,7 @@ namespace ScratchPad {
             // Dismiss it!
             DiscordLogger.Log(DiscordLogger.MessageType.Debug, "Dismissing MOTD");
             ClickAt(844, 307);
-            _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
+            RecordLastActionAndSetDelay(2000);
             return true;
         }
 
@@ -401,6 +436,7 @@ namespace ScratchPad {
         private void Start_Click(object sender, EventArgs e) {
             Init();
             if (btnStart.Text == "Start") {
+                RecordLastActionAndSetDelay();
                 DiscordLogger.Log(DiscordLogger.MessageType.Info, "Starting bot");
                 _screenCaptureWorker.Start();
                 btnStart.Text = "Stop";
