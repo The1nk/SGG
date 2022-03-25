@@ -31,6 +31,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="settings.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Templates\1X Speed Multiplier.bmp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

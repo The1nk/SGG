@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Forms;
@@ -114,8 +115,32 @@ namespace SGG.Models
                 return false;
 
             lock (image) {
-                if (image is Bitmap bmp)
-                    return _points.All(pt => bmp.GetPixel(pt.Item1.X, pt.Item1.Y) == pt.Item2);
+                if (image is Bitmap bmp) {
+#if DEBUG
+                    var good = 0;
+                    var bad = 0;
+                    foreach (var pt in _points) {
+                        var px = bmp.GetPixel(pt.Item1.X, pt.Item1.Y);
+
+                        if (pt.Item2 == px) {
+                            good++;
+                        }
+                        else {
+                            bad++;
+                        }
+                    }
+#endif
+
+                    var goodPixels = _points.Count(pt => bmp.GetPixel(pt.Item1.X, pt.Item1.Y) == pt.Item2);
+                    var pct = Convert.ToDouble(goodPixels) / _points.Count;
+
+#if DEBUG
+                    Debug.WriteLine($"Template '{Type}' passed?\t{bad == 0}\tGood:{good}\tBad:{bad}\tPct:{pct}");
+#endif
+                    var ret = (pct >= 0.8);
+
+                    return ret;
+                }
 
                 return false;
             }

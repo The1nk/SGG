@@ -195,7 +195,7 @@ namespace ScratchPad {
             DiscordLogger.Log(DiscordLogger.MessageType.Info, "Collecting offline gold");
             ClickAt(448, 1204, 1);
             ClickAt(250, 1084);
-            SendBackButton(0);
+            ClickAt(250, 900);
             _nextActionAvailableAt = DateTime.Now.AddSeconds(.2);
             return false;
         }
@@ -232,7 +232,7 @@ namespace ScratchPad {
             if (ret) {
                 if (enabled) {
                     DiscordLogger.Log(DiscordLogger.MessageType.Info, $"Accepting Seller for {saleType}");
-                    ClickAt(494, 915, 1);
+                    ClickAt(494, 915, 1, 1.5);
                     ClickAt(494, 915);
                     _nextActionAvailableAt = DateTime.Now.AddSeconds(2);
                 }
@@ -388,8 +388,14 @@ namespace ScratchPad {
             _client.ExecuteShellCommand(_device, $"input tap {x} {y}", null);
         }
 
-        private void ClickAt(int x, int y, int secondsDelay) {
-            _client.ExecuteShellCommand(_device, $"input tap {x} {y};sleep {secondsDelay}", null);
+        private void ClickAt(int x, int y, int secondsDelay, double prefixDelay = 0) {
+            var command = $"input tap {x} {y}";
+            if (prefixDelay != 0)
+                command = $"sleep {prefixDelay};" + command;
+            if (secondsDelay != 0)
+                command += $";sleep {secondsDelay}";
+
+            _client.ExecuteShellCommand(_device, command, null);
         }
 
         private void Start_Click(object sender, EventArgs e) {

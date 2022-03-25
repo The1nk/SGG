@@ -283,9 +283,9 @@ namespace ScratchPad
             this.cbSellerOther.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cbSellerOther.Location = new System.Drawing.Point(6, 57);
             this.cbSellerOther.Name = "cbSellerOther";
-            this.cbSellerOther.Size = new System.Drawing.Size(224, 24);
+            this.cbSellerOther.Size = new System.Drawing.Size(159, 24);
             this.cbSellerOther.TabIndex = 2;
-            this.cbSellerOther.Text = "Other (Summoning Stones, ?)";
+            this.cbSellerOther.Text = "Summoning Stones";
             this.cbSellerOther.UseVisualStyleBackColor = true;
             this.cbSellerOther.CheckedChanged += new System.EventHandler(this.CheckBox_CheckedChanged);
             // 
@@ -337,9 +337,9 @@ namespace ScratchPad
             this.cbMonitorOther.Enabled = false;
             this.cbMonitorOther.Location = new System.Drawing.Point(6, 57);
             this.cbMonitorOther.Name = "cbMonitorOther";
-            this.cbMonitorOther.Size = new System.Drawing.Size(224, 24);
+            this.cbMonitorOther.Size = new System.Drawing.Size(159, 24);
             this.cbMonitorOther.TabIndex = 3;
-            this.cbMonitorOther.Text = "Other (Summoning Stones, ?)";
+            this.cbMonitorOther.Text = "Summoning Stones";
             this.cbMonitorOther.UseVisualStyleBackColor = true;
             this.cbMonitorOther.CheckedChanged += new System.EventHandler(this.CheckBox_CheckedChanged);
             // 
@@ -431,7 +431,7 @@ namespace ScratchPad
             this.pictureBox1.Location = new System.Drawing.Point(349, 16);
             this.pictureBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(649, 708);
+            this.pictureBox1.Size = new System.Drawing.Size(399, 708);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 10;
             this.pictureBox1.TabStop = false;
@@ -441,7 +441,7 @@ namespace ScratchPad
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1013, 738);
+            this.ClientSize = new System.Drawing.Size(763, 738);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.pictureBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
