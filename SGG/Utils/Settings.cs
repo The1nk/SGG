@@ -12,18 +12,19 @@ namespace SGG.Utils
     public class SettingsInstance {
         public string AdbHost = "localhost";
         public string AdbPort = "1234";
+        public bool ShowImages = true;
+
+        public Point MapPoint = new Point(179, 612);
         public bool CollectAchievements = false;
         public bool CollectWeeklies = false;
         public bool StopAtWave6 = false;
-        public Point MapPoint = new Point(179, 612);
+        public bool SleepySummonerMode = true;
+        public bool CollectOfflineGold = false;
+
         public string AppRestartInterval = "-1";
         public string DeviceRestartInterval = "-1";
         public string ResetAfterXMinutesOfNoActivity = "10";
 
-        public bool SleepySummonerMode = true;
-        public bool CollectOfflineGold = false;
-        public bool ShowImages = true;
-        
         public bool SellerGems = false;
         public bool SellerOrbs = true;
         public bool SellerOther = true;
@@ -78,8 +79,6 @@ namespace SGG.Utils
             Instance.MonitorGems = false;
             Instance.MonitorOther = false;
             Instance.MonitorOrbs = false;
-
-
         }
     }
 }

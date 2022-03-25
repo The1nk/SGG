@@ -45,25 +45,31 @@ namespace ScratchPad {
             _disableAutoSave = true;
             tbAdbHost.Text = Settings.Instance.AdbHost;
             tbAdbPort.Text = Settings.Instance.AdbPort;
+            cbShowImages.Checked = Settings.Instance.ShowImages;
+            
+            _selectedMapPoint = Settings.Instance.MapPoint;
             cbCollectAchievements.Checked = Settings.Instance.CollectAchievements;
             cbCollectWeeklies.Checked = Settings.Instance.CollectWeeklies;
             cbWave6.Checked = Settings.Instance.StopAtWave6;
-            _selectedMapPoint = Settings.Instance.MapPoint;
+            cbSleepy.Checked = Settings.Instance.SleepySummonerMode;
+            cbOfflineGold.Checked = Settings.Instance.CollectOfflineGold;
+
             tbAppRestartInterval.Text = Settings.Instance.AppRestartInterval;
             tbDeviceRestartInterval.Text = Settings.Instance.DeviceRestartInterval;
+            tbResetAfterMinutesWithoutActivity.Text = Settings.Instance.ResetAfterXMinutesOfNoActivity;
+
             cbSellerGems.Checked = Settings.Instance.SellerGems;
             cbSellerOrbs.Checked = Settings.Instance.SellerOrbs;
             cbSellerOther.Checked = Settings.Instance.SellerOther;
+
             cbMonitorAttack.Checked = Settings.Instance.MonitorAttack;
             cbMonitorCoins.Checked = Settings.Instance.MonitorCoins;
             cbMonitorGems.Checked = Settings.Instance.MonitorGems;
             cbMonitorOrbs.Checked = Settings.Instance.MonitorOrbs;
             cbMonitorOther.Checked = Settings.Instance.MonitorOther;
+            
             tbDiscordHookUrl.Text = Settings.Instance.WebhookUrl;
-            cbSleepy.Checked = Settings.Instance.SleepySummonerMode;
-            cbOfflineGold.Checked = Settings.Instance.CollectOfflineGold;
-            tbResetAfterMinutesWithoutActivity.Text = Settings.Instance.ResetAfterXMinutesOfNoActivity;
-            cbShowImages.Checked = Settings.Instance.ShowImages;
+            
             _disableAutoSave = false;
         }
 
@@ -118,25 +124,30 @@ namespace ScratchPad {
 
             Settings.Instance.AdbHost =  tbAdbHost.Text;
             Settings.Instance.AdbPort =  tbAdbPort.Text;
+            Settings.Instance.ShowImages = cbShowImages.Checked;
+            
+            Settings.Instance.MapPoint =  _selectedMapPoint;
             Settings.Instance.CollectAchievements =  cbCollectAchievements.Checked;
             Settings.Instance.CollectWeeklies =  cbCollectWeeklies.Checked;
             Settings.Instance.StopAtWave6 =  cbWave6.Checked;
-            Settings.Instance.MapPoint =  _selectedMapPoint;
+            Settings.Instance.SleepySummonerMode = cbSleepy.Checked;
+            Settings.Instance.CollectOfflineGold = cbOfflineGold.Checked;
+
             Settings.Instance.AppRestartInterval =  tbAppRestartInterval.Text;
             Settings.Instance.DeviceRestartInterval =  tbDeviceRestartInterval.Text;
+            Settings.Instance.ResetAfterXMinutesOfNoActivity = tbResetAfterMinutesWithoutActivity.Text;
+
             Settings.Instance.SellerGems =  cbSellerGems.Checked;
             Settings.Instance.SellerOrbs =  cbSellerOrbs.Checked;
             Settings.Instance.SellerOther =  cbSellerOther.Checked;
+            
             Settings.Instance.MonitorAttack =  cbMonitorAttack.Checked;
             Settings.Instance.MonitorCoins =  cbMonitorCoins.Checked;
             Settings.Instance.MonitorGems =  cbMonitorGems.Checked;
             Settings.Instance.MonitorOrbs =  cbMonitorOrbs.Checked;
             Settings.Instance.MonitorOther =  cbMonitorOther.Checked;
+            
             Settings.Instance.WebhookUrl =  tbDiscordHookUrl.Text;
-            Settings.Instance.SleepySummonerMode = cbSleepy.Checked;
-            Settings.Instance.CollectOfflineGold = cbOfflineGold.Checked;
-            Settings.Instance.ResetAfterXMinutesOfNoActivity = tbResetAfterMinutesWithoutActivity.Text;
-            Settings.Instance.ShowImages = cbShowImages.Checked;
 
             Settings.Save();
         }
